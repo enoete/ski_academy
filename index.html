@@ -149,6 +149,8 @@
             --hint-bg: #FFFACD;
             --hint-border: #F0E68C;
             --hint-text-color: #333;
+            --modal-explanation-bg: #3B3B3B; /* Added for consistency */
+            --modal-explanation-text-color: #FFFFFF; /* Added for consistency */
         }
 
         /* Roblox Theme (Angles) */
@@ -185,6 +187,8 @@
             --hint-bg: #FFFACD;
             --hint-border: #F0E68C;
             --hint-text-color: #333;
+            --modal-explanation-bg: #3B3B3B; /* Added for consistency */
+            --modal-explanation-text-color: #FFFFFF; /* Added for consistency */
         }
 
         /* Fortnite Theme (Position, Decimals, Time) */
@@ -221,6 +225,8 @@
             --hint-bg: #FFFACD;
             --hint-border: #F0E68C;
             --hint-text-color: #333;
+            --modal-explanation-bg: #1A2530; /* Added for consistency */
+            --modal-explanation-text-color: #FFFFFF; /* Added for consistency */
         }
 
         /* Roblox Pizza Theme (Fractions) */
@@ -257,6 +263,8 @@
             --hint-bg: #FFFACD;
             --hint-border: #F0E68C;
             --hint-text-color: #333;
+            --modal-explanation-bg: #CD853F; /* Added for consistency */
+            --modal-explanation-text-color: #FFFFFF; /* Added for consistency */
         }
 
         /* Minecraft Shapes Theme (2D & 3D Shapes) */
@@ -293,6 +301,8 @@
             --hint-bg: #FFFACD;
             --hint-border: #F0E68C;
             --hint-text-color: #333;
+            --modal-explanation-bg: #4F7942; /* Added for consistency */
+            --modal-explanation-text-color: #FFFFFF; /* Added for consistency */
         }
 
         /* Common for all themed elements - font styles */
@@ -1877,7 +1887,7 @@
         <div id="feedback-modal" class="modal-backdrop hidden">
             <div id="modal-content" class="modal-content-themed">
                 <p id="feedback-text" class="text-xl mb-4 feedback-text-modal"></p>
-                <div id="feedback-explanation" class="text-left bg-gray-700 p-4 rounded mb-4"></div>
+                <div id="feedback-explanation" class="text-left p-4 rounded mb-4"></div> <!-- Removed bg-gray-700 and color is set by variable -->
                 <button onclick="closeModal()" class="action-button px-6 py-2 rounded">Keep Going!</button>
             </div>
         </div>
@@ -1973,7 +1983,6 @@
                     content.classList.add('active');
                     content.style.display = 'block'; // Ensure it's visible
                 } else {
-                    content.classList.remove('active');
                     content.style.display = 'none'; // Hide others
                 }
             });
@@ -2084,7 +2093,7 @@
             switch (theme) {
                 case 'minecraft': return "Almost! Let's check the recipe... 📜";
                 case 'roblox': return "📐 Not quite! Let's re-align... 📜";
-                case 'fortnite': return "⚠️ Storm is Closing In! Let's re-strategize... 📜";
+                case 'fortnite': return "⚠️ Storm is Closing In! Let's re-strategize... �";
                 case 'roblox-pizza': return "🤔 Oops! Let's check the recipe... 📜";
                 case 'minecraft-shapes': return "🚧 Block Placed Wrong! Let's review the plans... 📜";
                 default: return "Not quite! Let's review... 📜";
