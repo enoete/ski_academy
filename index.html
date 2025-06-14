@@ -15,6 +15,7 @@
             transition: background-color 0.5s ease, color 0.5s ease;
             -webkit-font-smoothing: antialiased; /* Smoother fonts */
             -moz-osx-font-smoothing: grayscale; /* Smoother fonts */
+            color: var(--default-text-color); /* Use CSS variable for base text color */
         }
         .main-container {
             max-width: 4xl;
@@ -27,12 +28,26 @@
             box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 5px 5px 0px rgba(0,0,0,0.25);
             transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
             padding: 1.5rem; /* p-6 */
+            background-color: var(--main-panel-bg);
+            border-color: var(--main-panel-border);
+            color: var(--main-panel-text-color); /* Explicit text color */
         }
         .question-block {
             border-radius: 8px;
             box-shadow: inset 0 0 8px rgba(0,0,0,0.3), 3px 3px 0px rgba(0,0,0,0.15);
             transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
             padding: 1rem; /* p-4 */
+            background-color: var(--question-block-bg);
+            border-color: var(--question-block-border);
+            color: var(--question-block-text-color); /* Explicit text color */
+        }
+        .study-guide-inner-panel { /* This was defined differently, now unify */
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+            background-color: var(--study-guide-inner-panel-bg);
+            border-color: var(--study-guide-inner-panel-border);
+            color: var(--study-guide-inner-panel-text-color); /* Explicit text color */
         }
         .action-button {
             border-radius: 6px;
@@ -53,6 +68,9 @@
             box-shadow: inset 2px 2px 0px rgba(0,0,0,0.4);
             transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
             width: 100%;
+            background-color: var(--input-bg);
+            border-color: var(--input-border);
+            color: var(--input-text-color);
         }
         .modal-backdrop {
             position: fixed;
@@ -75,11 +93,24 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.6);
             transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
         }
+        .modal-content-themed.success {
+            background-color: var(--modal-success-bg);
+            border-color: var(--modal-success-border);
+            color: var(--modal-success-text-color);
+        }
+        .modal-content-themed.error {
+            background-color: var(--modal-error-bg);
+            border-color: var(--modal-error-border);
+            color: var(--modal-error-text-color);
+        }
         .hint-box {
             border-radius: 6px;
             padding: 0.75rem;
             margin-top: 0.5rem;
             transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+            background-color: var(--hint-bg);
+            border-color: var(--hint-border);
+            color: var(--hint-text-color);
         }
 
         /* Theme-specific styles using data-theme attribute on body */
@@ -88,96 +119,189 @@
         body[data-theme="minecraft"] {
             background-color: #58803A;
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-            color: #FFFFFF;
+            --default-text-color: #FFFFFF;
+            --main-panel-bg: #A06C47;
+            --main-panel-border: #6D4830;
+            --main-panel-text-color: #FFFFFF;
+            --question-block-bg: #8D8D8D;
+            --question-block-border: #707070;
+            --question-block-text-color: #FFFFFF; /* Adjusted for contrast */
+            --study-guide-inner-panel-bg: #9B7C62;
+            --study-guide-inner-panel-border: #5E4A3A;
+            --study-guide-inner-panel-text-color: #FFFFFF;
+            --action-button-bg: #C0C0C0;
+            --action-button-border: #7B7B7B;
+            --action-button-border-bottom: #555555;
+            --action-button-border-right: #555555;
+            --action-button-border-top: #E0E0E0;
+            --action-button-border-left: #E0E0E0;
+            --action-button-text-color: #333333;
+            --action-button-text-shadow: #FFF;
+            --input-bg: #3B3B3B;
+            --input-border: #1E1E1E;
+            --input-text-color: #FFFFFF;
+            --modal-success-bg: #A06C47;
+            --modal-success-border: #6D4830;
+            --modal-success-text-color: #FFFFFF;
+            --modal-error-bg: #8D8D8D;
+            --modal-error-border: #707070;
+            --modal-error-text-color: #FFFFFF; /* Adjusted for contrast */
+            --hint-bg: #FFFACD;
+            --hint-border: #F0E68C;
+            --hint-text-color: #333;
         }
-        body[data-theme="minecraft"] .main-panel { background-color: #A06C47; border: 5px solid #6D4830; }
-        body[data-theme="minecraft"] .question-block { background-color: #8D8D8D; border: 4px solid #707070; color: #333333; }
-        body[data-theme="minecraft"] .study-guide-inner-panel { background-color: #9B7C62; border: 4px solid #5E4A3A; } /* specific to some study guides */
-        body[data-theme="minecraft"] .action-button { background-color: #C0C0C0; border: 3px solid #7B7B7B; border-bottom-color: #555555; border-right-color: #555555; border-top-color: #E0E0E0; border-left-color: #E0E0E0; color: #333333; text-shadow: 1px 1px #FFF; }
-        body[data-theme="minecraft"] .action-button:active { border-top-color: #555555; border-left-color: #555555; border-bottom-color: #E0E0E0; border-right-color: #E0E0E0; }
-        body[data-theme="minecraft"] .input-themed { background-color: #3B3B3B; border: 3px solid #1E1E1E; color: #FFFFFF; }
-        body[data-theme="minecraft"] .modal-content-themed.success { background-color: #A06C47; border-color: #6D4830; color: #FFFFFF;}
-        body[data-theme="minecraft"] .modal-content-themed.error { background-color: #8D8D8D; border-color: #707070; color: #333333;}
-        body[data-theme="minecraft"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
-        body[data-theme="minecraft"] .data-table { background-color: #4A4A4A; color: #E0E0E0; border: 2px solid #2B2B2B; }
-        body[data-theme="minecraft"] .data-table th { background-color: #6D4830; }
-        body[data-theme="minecraft"] .unit-square { background-color: #BBB; border: 1px solid #777; }
-
 
         /* Roblox Theme (Angles) */
         body[data-theme="roblox"] {
             background-color: #6C81A0;
             background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
-            color: #FFFFFF;
+            --default-text-color: #FFFFFF;
+            --main-panel-bg: #A0B9D8;
+            --main-panel-border: #586B80;
+            --main-panel-text-color: #333333;
+            --question-block-bg: #D8E6F0;
+            --question-block-border: #8FA2B8;
+            --question-block-text-color: #333333;
+            --study-guide-inner-panel-bg: #B0C4DE; /* Adjusted for theme */
+            --study-guide-inner-panel-border: #778899; /* Adjusted for theme */
+            --study-guide-inner-panel-text-color: #333333; /* Adjusted for contrast */
+            --action-button-bg: #2F6DA6;
+            --action-button-border: #1A4D73;
+            --action-button-border-bottom: #0F2D4A;
+            --action-button-border-right: #0F2D4A;
+            --action-button-border-top: #4A8FD2;
+            --action-button-border-left: #4A8FD2;
+            --action-button-text-color: #FFFFFF;
+            --action-button-text-shadow: #000;
+            --input-bg: #3B3B3B;
+            --input-border: #1E1E1E;
+            --input-text-color: #FFFFFF;
+            --modal-success-bg: #A0B9D8;
+            --modal-success-border: #586B80;
+            --modal-success-text-color: #333333; /* Adjusted for contrast */
+            --modal-error-bg: #D8E6F0;
+            --modal-error-border: #8FA2B8;
+            --modal-error-text-color: #333333;
+            --hint-bg: #FFFACD;
+            --hint-border: #F0E68C;
+            --hint-text-color: #333;
         }
-        body[data-theme="roblox"] .main-panel { background-color: #A0B9D8; border: 5px solid #586B80; }
-        body[data-theme="roblox"] .question-block { background-color: #D8E6F0; border: 4px solid #8FA2B8; color: #333333; }
-        body[data-theme="roblox"] .study-guide-inner-panel { background-color: #9B7C62; border: 4px solid #5E4A3A; } /* shares some minecraft dark dirt style, re-evaluate */
-        body[data-theme="roblox"] .action-button { background-color: #2F6DA6; border: 3px solid #1A4D73; border-bottom-color: #0F2D4A; border-right-color: #0F2D4A; border-top-color: #4A8FD2; border-left-color: #4A8FD2; color: #FFFFFF; text-shadow: 1px 1px #000; }
-        body[data-theme="roblox"] .action-button:active { border-top-color: #0F2D4A; border-left-color: #0F2D4A; border-bottom-color: #4A8FD2; border-right-color: #4A8FD2; }
-        body[data-theme="roblox"] .input-themed { background-color: #3B3B3B; border: 3px solid #1E1E1E; color: #FFFFFF; }
-        body[data-theme="roblox"] .modal-content-themed.success { background-color: #A0B9D8; border-color: #586B80; color: #FFFFFF;}
-        body[data-theme="roblox"] .modal-content-themed.error { background-color: #D8E6F0; border-color: #8FA2B8; color: #333333;}
-        body[data-theme="roblox"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
 
         /* Fortnite Theme (Position, Decimals, Time) */
         body[data-theme="fortnite"] {
             background-color: #2A405A;
             background-image: url('https://www.transparenttextures.com/patterns/black-felt.png');
-            color: #E0E0E0;
+            --default-text-color: #E0E0E0;
+            --main-panel-bg: #3B5A7A;
+            --main-panel-border: #1C2B3C;
+            --main-panel-text-color: #E0E0E0;
+            --question-block-bg: #4C729B;
+            --question-block-border: #2A405A;
+            --question-block-text-color: #FFFFFF;
+            --study-guide-inner-panel-bg: #2A405A;
+            --study-guide-inner-panel-border: #1A2530;
+            --study-guide-inner-panel-text-color: #E0E0E0;
+            --action-button-bg: linear-gradient(to bottom, #8C52FF, #6A2BE3);
+            --action-button-border: #4B1A99;
+            --action-button-border-bottom: #330F66;
+            --action-button-border-right: #330F66;
+            --action-button-border-top: #A072FF;
+            --action-button-border-left: #A072FF;
+            --action-button-text-color: #FFFFFF;
+            --action-button-text-shadow: #000;
+            --input-bg: #1A2530;
+            --input-border: #0D141A;
+            --input-text-color: #FFFFFF;
+            --modal-success-bg: #3B5A7A;
+            --modal-success-border: #1C2B3C;
+            --modal-success-text-color: #E0E0E0;
+            --modal-error-bg: #4C729B;
+            --modal-error-border: #2A405A;
+            --modal-error-text-color: #FFFFFF;
+            --hint-bg: #FFFACD;
+            --hint-border: #F0E68C;
+            --hint-text-color: #333;
         }
-        body[data-theme="fortnite"] .main-panel { background-color: #3B5A7A; border: 4px solid #1C2B3C; box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.1); }
-        body[data-theme="fortnite"] .question-block { background-color: #4C729B; border: 3px solid #2A405A; color: #FFFFFF; }
-        body[data-theme="fortnite"] .action-button { background: linear-gradient(to bottom, #8C52FF, #6A2BE3); border: 3px solid #4B1A99; border-bottom-color: #330F66; border-right-color: #330F66; border-top-color: #A072FF; border-left-color: #A072FF; color: #FFFFFF; text-shadow: 1px 1px #000; }
-        body[data-theme="fortnite"] .action-button:active { background: linear-gradient(to bottom, #6A2BE3, #8C52FF); border-top-color: #330F66; border-left-color: #330F66; border-bottom-color: #A072FF; border-right-color: #A072FF; }
-        body[data-theme="fortnite"] .input-themed { background-color: #1A2530; border: 2px solid #0D141A; color: #FFFFFF; }
-        body[data-theme="fortnite"] .modal-content-themed.success { background-color: #3B5A7A; border-color: #1C2B3C; color: #E0E0E0;}
-        body[data-theme="fortnite"] .modal-content-themed.error { background-color: #4C729B; border-color: #2A405A; color: #FFFFFF;}
-        body[data-theme="fortnite"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
-        body[data-theme="fortnite"] .data-table { background-color: #4A4A4A; color: #E0E0E0; border: 2px solid #2B2B2B; }
-        body[data-theme="fortnite"] .data-table th { background-color: #2A405A; }
-        body[data-theme="fortnite"] .map-cell { background-color: #8C8C8C; color: #222; border: 1px solid #999; }
-        body[data-theme="fortnite"] .map-cell.player { background-color: #FFD700; border: 2px solid #B8860B; color: #333;}
-        body[data-theme="fortnite"] .map-cell.target { background-color: #FF4500; border: 2px solid #8B0000; color: #FFF; }
-        body[data-theme="fortnite"] .map-cell.path { background-color: #9ACD32; border: 2px solid #6B8E23; }
-
 
         /* Roblox Pizza Theme (Fractions) */
         body[data-theme="roblox-pizza"] {
             background-color: #A06C47;
             background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
-            color: #FFFFFF;
+            --default-text-color: #FFFFFF;
+            --main-panel-bg: #E89E5F;
+            --main-panel-border: #8B4513;
+            --main-panel-text-color: #333333;
+            --question-block-bg: #F0C4B4;
+            --question-block-border: #D2691E;
+            --question-block-text-color: #333333;
+            --study-guide-inner-panel-bg: #FFC0CB; /* Adjusted for theme */
+            --study-guide-inner-panel-border: #CD5C5C; /* Adjusted for theme */
+            --study-guide-inner-panel-text-color: #333333; /* Adjusted for contrast */
+            --action-button-bg: linear-gradient(to bottom, #FFD700, #FFA500);
+            --action-button-border: #DAA520;
+            --action-button-border-bottom: #B8860B;
+            --action-button-border-right: #B8860B;
+            --action-button-border-top: #FFEC8B;
+            --action-button-border-left: #FFEC8B;
+            --action-button-text-color: #333333;
+            --action-button-text-shadow: #FFF;
+            --input-bg: #8B4513;
+            --input-border: #5C320A;
+            --input-text-color: #FFFFFF;
+            --modal-success-bg: #E89E5F;
+            --modal-success-border: #8B4513;
+            --modal-success-text-color: #333333;
+            --modal-error-bg: #F0C4B4;
+            --modal-error-border: #D2691E;
+            --modal-error-text-color: #333333;
+            --hint-bg: #FFFACD;
+            --hint-border: #F0E68C;
+            --hint-text-color: #333;
         }
-        body[data-theme="roblox-pizza"] .main-panel { background-color: #E89E5F; border: 5px solid #8B4513; }
-        body[data-theme="roblox-pizza"] .question-block { background-color: #F0C4B4; border: 4px solid #D2691E; color: #333333; }
-        body[data-theme="roblox-pizza"] .study-guide-inner-panel { background-color: #9B7C62; border: 4px solid #5E4A3A; } /* shares some minecraft dark dirt style, re-evaluate */
-        body[data-theme="roblox-pizza"] .action-button { background: linear-gradient(to bottom, #FFD700, #FFA500); border: 3px solid #DAA520; border-bottom-color: #B8860B; border-right-color: #B8860B; border-top-color: #FFEC8B; border-left-color: #FFEC8B; color: #333333; text-shadow: 1px 1px #FFF; }
-        body[data-theme="roblox-pizza"] .action-button:active { background: linear-gradient(to bottom, #FFA500, #FFD700); border-top-color: #B8860B; border-left-color: #B8860B; border-bottom-color: #FFEC8B; border-right-color: #FFEC8B; }
-        body[data-theme="roblox-pizza"] .input-themed { background-color: #8B4513; border: 3px solid #5C320A; color: #FFFFFF; }
-        body[data-theme="roblox-pizza"] .modal-content-themed.success { background-color: #E89E5F; border-color: #8B4513; color: #333333;}
-        body[data-theme="roblox-pizza"] .modal-content-themed.error { background-color: #F0C4B4; border-color: #D2691E; color: #333333;}
-        body[data-theme="roblox-pizza"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
 
         /* Minecraft Shapes Theme (2D & 3D Shapes) */
         body[data-theme="minecraft-shapes"] {
             background-color: #4CAF50;
             background-image: url('https://www.transparenttextures.com/patterns/dark-mosaic.png');
-            color: #FFFFFF;
+            --default-text-color: #FFFFFF;
+            --main-panel-bg: #8BC34A;
+            --main-panel-border: #388E3C;
+            --main-panel-text-color: #FFFFFF;
+            --question-block-bg: #C8E6C9;
+            --question-block-border: #689F38;
+            --question-block-text-color: #333333;
+            --study-guide-inner-panel-bg: #6B8E23; /* Adjusted for theme */
+            --study-guide-inner-panel-border: #4F7942; /* Adjusted for theme */
+            --study-guide-inner-panel-text-color: #FFFFFF;
+            --action-button-bg: linear-gradient(to bottom, #FF9800, #F57C00);
+            --action-button-border: #E65100;
+            --action-button-border-bottom: #BF360C;
+            --action-button-border-right: #BF360C;
+            --action-button-border-top: #FFB74D;
+            --action-button-border-left: #FFB74D;
+            --action-button-text-color: #FFFFFF;
+            --action-button-text-shadow: #000;
+            --input-bg: #212121;
+            --input-border: #000000;
+            --input-text-color: #FFFFFF;
+            --modal-success-bg: #8BC34A;
+            --modal-success-border: #388E3C;
+            --modal-success-text-color: #333333; /* Adjusted for contrast */
+            --modal-error-bg: #C8E6C9;
+            --modal-error-border: #689F38;
+            --modal-error-text-color: #333333;
+            --hint-bg: #FFFACD;
+            --hint-border: #F0E68C;
+            --hint-text-color: #333;
         }
-        body[data-theme="minecraft-shapes"] .main-panel { background-color: #8BC34A; border: 5px solid #388E3C; }
-        body[data-theme="minecraft-shapes"] .question-block { background-color: #C8E6C9; border: 4px solid #689F38; color: #333333; }
-        body[data-theme="minecraft-shapes"] .action-button { background: linear-gradient(to bottom, #FF9800, #F57C00); border: 3px solid #E65100; border-bottom-color: #BF360C; border-right-color: #BF360C; border-top-color: #FFB74D; border-left-color: #FFB74D; color: #FFFFFF; text-shadow: 1px 1px #000; }
-        body[data-theme="minecraft-shapes"] .action-button:active { background: linear-gradient(to bottom, #F57C00, #FF9800); border-top-color: #BF360C; border-left-color: #BF360C; border-bottom-color: #FFB74D; border-right-color: #FFB74D; }
-        body[data-theme="minecraft-shapes"] .input-themed { background-color: #212121; border: 2px solid #000000; color: #FFFFFF; }
-        body[data-theme="minecraft-shapes"] .modal-content-themed.success { background-color: #8BC34A; border-color: #388E3C; color: #333333;}
-        body[data-theme="minecraft-shapes"] .modal-content-themed.error { background-color: #C8E6C9; border-color: #689F38; color: #333333;}
-        body[data-theme="minecraft-shapes"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
 
         /* Common for all themed elements - font styles */
         .header-title { font-family: 'Press Start 2P', cursive; text-shadow: 2px 2px 0px #000; }
         .section-title { font-family: 'Press Start 2P', cursive; }
-        .quiz-item strong { /* Specific styling for strong in question blocks */ }
-        .quiz-item li { /* Specific styling for list items in question blocks */ }
+        .question-text { /* specific questions have this class */ }
+        .question-block p, .question-block h3, .question-block strong, .question-block li, .question-block th, .question-block td {
+            color: inherit; /* Ensure all text elements within question-block adopt its color variable */
+        }
         .data-table th, .data-table td { border: 2px solid; padding: 8px; }
 
 
@@ -219,6 +343,64 @@
         .tab-content.active {
             display: block; /* Show active tab */
         }
+        .unit-square {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 1px solid var(--question-block-text-color); /* Matches current block text color */
+            background-color: var(--question-block-bg); /* Matches current block background */
+            margin: 1px;
+            vertical-align: middle;
+        }
+         .map-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            width: 100%;
+            max-width: 400px;
+            aspect-ratio: 1 / 1;
+            margin: 0 auto 1.5rem;
+            border: 2px solid #555;
+            background-color: #777; /* Neutral background for map */
+        }
+        .map-cell {
+            border: 1px solid #999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            background-color: var(--map-cell-bg, #8C8C8C);
+            color: var(--map-cell-text, #222);
+        }
+        .map-cell.player {
+            background-color: var(--map-player-bg, #FFD700);
+            border: 2px solid var(--map-player-border, #B8860B);
+            color: var(--map-player-text, #333);
+        }
+        .map-cell.target {
+            background-color: var(--map-target-bg, #FF4500);
+            border: 2px solid var(--map-target-border, #8B0000);
+            color: var(--map-target-text, #FFF);
+        }
+        .map-cell.path {
+            background-color: var(--map-path-bg, #9ACD32);
+            border: 2px solid var(--map-path-border, #6B8E23);
+        }
+
+        body[data-theme="fortnite"] {
+            --map-cell-bg: #8C8C8C;
+            --map-cell-text: #222;
+            --map-player-bg: #FFD700;
+            --map-player-border: #B8860B;
+            --map-player-text: #333;
+            --map-target-bg: #FF4500;
+            --map-target-border: #8B0000;
+            --map-target-text: #FFF;
+            --map-path-bg: #9ACD32;
+            --map-path-border: #6B8E23;
+        }
+
     </style>
 </head>
 <body data-theme="minecraft"> <!-- Default theme on load -->
@@ -489,7 +671,7 @@
                             <input type="number" id="data-q6-input" class="input-themed w-full rounded mb-2">
                             <button onclick="toggleHint('data-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
                             <div id="data-hint6" class="hidden hint-box p-3 rounded mb-2">First, figure out the total number of players for Tycoon and Obby using the key. Then, find the difference!</div>
-                            <button onclick="checkAnswer('data-q6', 4, 'Tycoon: 5 🎮 &times; 2 players/🎮 = 10 players. <br>Obby: 3 🎮 &times; 2 players/🎮 = 6 players. <br>To find how many more, subtract: 10 - 6 = 4 more players.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                            <button onclick="checkAnswer('data-q6', 4, 'Tycoon: 5 🎮 &times; 2 players/🎮 = 10 players. <br>Obby: 3 � &times; 2 players/🎮 = 6 players. <br>To find how many more, subtract: 10 - 6 = 4 more players.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
                         </div>
 
                         <!-- Question 7 (Multi-step - from Bar Graph) -->
@@ -1847,7 +2029,8 @@
                             return NaN;
                         };
                         const userValue = parseMixedNumber(userInput);
-                        const correctFractionValue = eval(correctAnswer.split('/')[0]) / eval(correctAnswer.split('/')[1]); // Simple eval for fraction value
+                        // Convert correct fraction string (e.g., "7/3") to a numerical value for comparison
+                        const correctFractionValue = eval(correctAnswer.split('/')[0]) / eval(correctAnswer.split('/')[1]);
                         isCorrect = Math.abs(userValue - correctFractionValue) < 0.0001; // With tolerance
                     }
 
@@ -1899,7 +2082,7 @@
 
         function getErrorMessage(theme) {
             switch (theme) {
-                case 'minecraft': return "Almost! Let's check the recipe... �";
+                case 'minecraft': return "Almost! Let's check the recipe... 📜";
                 case 'roblox': return "📐 Not quite! Let's re-align... 📜";
                 case 'fortnite': return "⚠️ Storm is Closing In! Let's re-strategize... 📜";
                 case 'roblox-pizza': return "🤔 Oops! Let's check the recipe... 📜";
@@ -1933,4 +2116,3 @@
     </script>
 </body>
 </html>
-�
