@@ -191,6 +191,100 @@
             --modal-explanation-text-color: #FFFFFF; /* Added for consistency */
         }
 
+        /* Apply CSS variables to action buttons for each theme */
+body[data-theme="minecraft"] .action-button {
+    background: var(--action-button-bg);
+    border: 3px solid var(--action-button-border);
+    border-bottom-color: var(--action-button-border-bottom);
+    border-right-color: var(--action-button-border-right);
+    border-top-color: var(--action-button-border-top);
+    border-left-color: var(--action-button-border-left);
+    color: var(--action-button-text-color);
+    text-shadow: 1px 1px var(--action-button-text-shadow);
+}
+
+body[data-theme="minecraft"] .action-button:active {
+    border-top-color: var(--action-button-border-bottom);
+    border-left-color: var(--action-button-border-bottom);
+    border-bottom-color: var(--action-button-border-top);
+    border-right-color: var(--action-button-border-top);
+}
+
+body[data-theme="roblox"] .action-button {
+    background: var(--action-button-bg);
+    border: 3px solid var(--action-button-border);
+    border-bottom-color: var(--action-button-border-bottom);
+    border-right-color: var(--action-button-border-right);
+    border-top-color: var(--action-button-border-top);
+    border-left-color: var(--action-button-border-left);
+    color: var(--action-button-text-color);
+    text-shadow: 1px 1px var(--action-button-text-shadow);
+}
+
+body[data-theme="roblox"] .action-button:active {
+    border-top-color: var(--action-button-border-bottom);
+    border-left-color: var(--action-button-border-bottom);
+    border-bottom-color: var(--action-button-border-top);
+    border-right-color: var(--action-button-border-top);
+}
+
+body[data-theme="fortnite"] .action-button {
+    background: var(--action-button-bg);
+    border: 3px solid var(--action-button-border);
+    border-bottom-color: var(--action-button-border-bottom);
+    border-right-color: var(--action-button-border-right);
+    border-top-color: var(--action-button-border-top);
+    border-left-color: var(--action-button-border-left);
+    color: var(--action-button-text-color);
+    text-shadow: 1px 1px var(--action-button-text-shadow);
+}
+
+body[data-theme="fortnite"] .action-button:active {
+    background: linear-gradient(to bottom, #6A2BE3, #8C52FF);
+    border-top-color: var(--action-button-border-bottom);
+    border-left-color: var(--action-button-border-bottom);
+    border-bottom-color: var(--action-button-border-top);
+    border-right-color: var(--action-button-border-top);
+}
+
+body[data-theme="roblox-pizza"] .action-button {
+    background: var(--action-button-bg);
+    border: 3px solid var(--action-button-border);
+    border-bottom-color: var(--action-button-border-bottom);
+    border-right-color: var(--action-button-border-right);
+    border-top-color: var(--action-button-border-top);
+    border-left-color: var(--action-button-border-left);
+    color: var(--action-button-text-color);
+    text-shadow: 1px 1px var(--action-button-text-shadow);
+}
+
+body[data-theme="roblox-pizza"] .action-button:active {
+    background: linear-gradient(to bottom, #FFA500, #FFD700);
+    border-top-color: var(--action-button-border-bottom);
+    border-left-color: var(--action-button-border-bottom);
+    border-bottom-color: var(--action-button-border-top);
+    border-right-color: var(--action-button-border-top);
+}
+
+body[data-theme="minecraft-shapes"] .action-button {
+    background: var(--action-button-bg);
+    border: 3px solid var(--action-button-border);
+    border-bottom-color: var(--action-button-border-bottom);
+    border-right-color: var(--action-button-border-right);
+    border-top-color: var(--action-button-border-top);
+    border-left-color: var(--action-button-border-left);
+    color: var(--action-button-text-color);
+    text-shadow: 1px 1px var(--action-button-text-shadow);
+}
+
+body[data-theme="minecraft-shapes"] .action-button:active {
+    background: linear-gradient(to bottom, #F57C00, #FF9800);
+    border-top-color: var(--action-button-border-bottom);
+    border-left-color: var(--action-button-border-bottom);
+    border-bottom-color: var(--action-button-border-top);
+    border-right-color: var(--action-button-border-top);
+}
+
         /* Fortnite Theme (Position, Decimals, Time) */
         body[data-theme="fortnite"] {
             background-color: #2A405A;
