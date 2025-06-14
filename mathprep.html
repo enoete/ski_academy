@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Adventure Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Arial:wght@400;700&family=Press+Start+2P&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles - always apply */
+        body {
+            font-family: 'Arial', sans-serif;
+            transition: background-color 0.5s ease, color 0.5s ease;
+            -webkit-font-smoothing: antialiased; /* Smoother fonts */
+            -moz-osx-font-smoothing: grayscale; /* Smoother fonts */
+        }
+        .main-container {
+            max-width: 4xl;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 1rem; /* p-4 md:p-8 */
+        }
+        .main-panel {
+            border-radius: 12px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 5px 5px 0px rgba(0,0,0,0.25);
+            transition: background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
+            padding: 1.5rem; /* p-6 */
+        }
+        .question-block {
+            border-radius: 8px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.3), 3px 3px 0px rgba(0,0,0,0.15);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+            padding: 1rem; /* p-4 */
+        }
+        .action-button {
+            border-radius: 6px;
+            text-shadow: 1px 1px #000;
+            image-rendering: pixelated;
+            transition: all 0.1s ease;
+            font-weight: bold;
+            padding: 0.75rem 1.5rem;
+            width: 100%;
+        }
+        .action-button:active {
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.2);
+            transform: translateY(1px);
+        }
+        .input-themed {
+            border-radius: 4px;
+            padding: 8px 12px;
+            box-shadow: inset 2px 2px 0px rgba(0,0,0,0.4);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+            width: 100%;
+        }
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-content-themed {
+            padding: 25px;
+            border-radius: 12px;
+            max-width: 90%;
+            width: 550px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease, box-shadow 0.5s ease;
+        }
+        .hint-box {
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            transition: background-color 0.5s ease, border-color 0.5s ease, color 0.5s ease;
+        }
+
+        /* Theme-specific styles using data-theme attribute on body */
+
+        /* Minecraft Theme (Multiplication, Data, Area) */
+        body[data-theme="minecraft"] {
+            background-color: #58803A;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            color: #FFFFFF;
+        }
+        body[data-theme="minecraft"] .main-panel { background-color: #A06C47; border: 5px solid #6D4830; }
+        body[data-theme="minecraft"] .question-block { background-color: #8D8D8D; border: 4px solid #707070; color: #333333; }
+        body[data-theme="minecraft"] .study-guide-inner-panel { background-color: #9B7C62; border: 4px solid #5E4A3A; } /* specific to some study guides */
+        body[data-theme="minecraft"] .action-button { background-color: #C0C0C0; border: 3px solid #7B7B7B; border-bottom-color: #555555; border-right-color: #555555; border-top-color: #E0E0E0; border-left-color: #E0E0E0; color: #333333; text-shadow: 1px 1px #FFF; }
+        body[data-theme="minecraft"] .action-button:active { border-top-color: #555555; border-left-color: #555555; border-bottom-color: #E0E0E0; border-right-color: #E0E0E0; }
+        body[data-theme="minecraft"] .input-themed { background-color: #3B3B3B; border: 3px solid #1E1E1E; color: #FFFFFF; }
+        body[data-theme="minecraft"] .modal-content-themed.success { background-color: #A06C47; border-color: #6D4830; color: #FFFFFF;}
+        body[data-theme="minecraft"] .modal-content-themed.error { background-color: #8D8D8D; border-color: #707070; color: #333333;}
+        body[data-theme="minecraft"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
+        body[data-theme="minecraft"] .data-table { background-color: #4A4A4A; color: #E0E0E0; border: 2px solid #2B2B2B; }
+        body[data-theme="minecraft"] .data-table th { background-color: #6D4830; }
+        body[data-theme="minecraft"] .unit-square { background-color: #BBB; border: 1px solid #777; }
+
+
+        /* Roblox Theme (Angles) */
+        body[data-theme="roblox"] {
+            background-color: #6C81A0;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png');
+            color: #FFFFFF;
+        }
+        body[data-theme="roblox"] .main-panel { background-color: #A0B9D8; border: 5px solid #586B80; }
+        body[data-theme="roblox"] .question-block { background-color: #D8E6F0; border: 4px solid #8FA2B8; color: #333333; }
+        body[data-theme="roblox"] .study-guide-inner-panel { background-color: #9B7C62; border: 4px solid #5E4A3A; } /* shares some minecraft dark dirt style, re-evaluate */
+        body[data-theme="roblox"] .action-button { background-color: #2F6DA6; border: 3px solid #1A4D73; border-bottom-color: #0F2D4A; border-right-color: #0F2D4A; border-top-color: #4A8FD2; border-left-color: #4A8FD2; color: #FFFFFF; text-shadow: 1px 1px #000; }
+        body[data-theme="roblox"] .action-button:active { border-top-color: #0F2D4A; border-left-color: #0F2D4A; border-bottom-color: #4A8FD2; border-right-color: #4A8FD2; }
+        body[data-theme="roblox"] .input-themed { background-color: #3B3B3B; border: 3px solid #1E1E1E; color: #FFFFFF; }
+        body[data-theme="roblox"] .modal-content-themed.success { background-color: #A0B9D8; border-color: #586B80; color: #FFFFFF;}
+        body[data-theme="roblox"] .modal-content-themed.error { background-color: #D8E6F0; border-color: #8FA2B8; color: #333333;}
+        body[data-theme="roblox"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
+
+        /* Fortnite Theme (Position, Decimals, Time) */
+        body[data-theme="fortnite"] {
+            background-color: #2A405A;
+            background-image: url('https://www.transparenttextures.com/patterns/black-felt.png');
+            color: #E0E0E0;
+        }
+        body[data-theme="fortnite"] .main-panel { background-color: #3B5A7A; border: 4px solid #1C2B3C; box-shadow: 0 8px 15px rgba(0,0,0,0.4), inset 0 0 10px rgba(255,255,255,0.1); }
+        body[data-theme="fortnite"] .question-block { background-color: #4C729B; border: 3px solid #2A405A; color: #FFFFFF; }
+        body[data-theme="fortnite"] .action-button { background: linear-gradient(to bottom, #8C52FF, #6A2BE3); border: 3px solid #4B1A99; border-bottom-color: #330F66; border-right-color: #330F66; border-top-color: #A072FF; border-left-color: #A072FF; color: #FFFFFF; text-shadow: 1px 1px #000; }
+        body[data-theme="fortnite"] .action-button:active { background: linear-gradient(to bottom, #6A2BE3, #8C52FF); border-top-color: #330F66; border-left-color: #330F66; border-bottom-color: #A072FF; border-right-color: #A072FF; }
+        body[data-theme="fortnite"] .input-themed { background-color: #1A2530; border: 2px solid #0D141A; color: #FFFFFF; }
+        body[data-theme="fortnite"] .modal-content-themed.success { background-color: #3B5A7A; border-color: #1C2B3C; color: #E0E0E0;}
+        body[data-theme="fortnite"] .modal-content-themed.error { background-color: #4C729B; border-color: #2A405A; color: #FFFFFF;}
+        body[data-theme="fortnite"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
+        body[data-theme="fortnite"] .data-table { background-color: #4A4A4A; color: #E0E0E0; border: 2px solid #2B2B2B; }
+        body[data-theme="fortnite"] .data-table th { background-color: #2A405A; }
+        body[data-theme="fortnite"] .map-cell { background-color: #8C8C8C; color: #222; border: 1px solid #999; }
+        body[data-theme="fortnite"] .map-cell.player { background-color: #FFD700; border: 2px solid #B8860B; color: #333;}
+        body[data-theme="fortnite"] .map-cell.target { background-color: #FF4500; border: 2px solid #8B0000; color: #FFF; }
+        body[data-theme="fortnite"] .map-cell.path { background-color: #9ACD32; border: 2px solid #6B8E23; }
+
+
+        /* Roblox Pizza Theme (Fractions) */
+        body[data-theme="roblox-pizza"] {
+            background-color: #A06C47;
+            background-image: url('https://www.transparenttextures.com/patterns/brick-wall.png');
+            color: #FFFFFF;
+        }
+        body[data-theme="roblox-pizza"] .main-panel { background-color: #E89E5F; border: 5px solid #8B4513; }
+        body[data-theme="roblox-pizza"] .question-block { background-color: #F0C4B4; border: 4px solid #D2691E; color: #333333; }
+        body[data-theme="roblox-pizza"] .study-guide-inner-panel { background-color: #9B7C62; border: 4px solid #5E4A3A; } /* shares some minecraft dark dirt style, re-evaluate */
+        body[data-theme="roblox-pizza"] .action-button { background: linear-gradient(to bottom, #FFD700, #FFA500); border: 3px solid #DAA520; border-bottom-color: #B8860B; border-right-color: #B8860B; border-top-color: #FFEC8B; border-left-color: #FFEC8B; color: #333333; text-shadow: 1px 1px #FFF; }
+        body[data-theme="roblox-pizza"] .action-button:active { background: linear-gradient(to bottom, #FFA500, #FFD700); border-top-color: #B8860B; border-left-color: #B8860B; border-bottom-color: #FFEC8B; border-right-color: #FFEC8B; }
+        body[data-theme="roblox-pizza"] .input-themed { background-color: #8B4513; border: 3px solid #5C320A; color: #FFFFFF; }
+        body[data-theme="roblox-pizza"] .modal-content-themed.success { background-color: #E89E5F; border-color: #8B4513; color: #333333;}
+        body[data-theme="roblox-pizza"] .modal-content-themed.error { background-color: #F0C4B4; border-color: #D2691E; color: #333333;}
+        body[data-theme="roblox-pizza"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
+
+        /* Minecraft Shapes Theme (2D & 3D Shapes) */
+        body[data-theme="minecraft-shapes"] {
+            background-color: #4CAF50;
+            background-image: url('https://www.transparenttextures.com/patterns/dark-mosaic.png');
+            color: #FFFFFF;
+        }
+        body[data-theme="minecraft-shapes"] .main-panel { background-color: #8BC34A; border: 5px solid #388E3C; }
+        body[data-theme="minecraft-shapes"] .question-block { background-color: #C8E6C9; border: 4px solid #689F38; color: #333333; }
+        body[data-theme="minecraft-shapes"] .action-button { background: linear-gradient(to bottom, #FF9800, #F57C00); border: 3px solid #E65100; border-bottom-color: #BF360C; border-right-color: #BF360C; border-top-color: #FFB74D; border-left-color: #FFB74D; color: #FFFFFF; text-shadow: 1px 1px #000; }
+        body[data-theme="minecraft-shapes"] .action-button:active { background: linear-gradient(to bottom, #F57C00, #FF9800); border-top-color: #BF360C; border-left-color: #BF360C; border-bottom-color: #FFB74D; border-right-color: #FFB74D; }
+        body[data-theme="minecraft-shapes"] .input-themed { background-color: #212121; border: 2px solid #000000; color: #FFFFFF; }
+        body[data-theme="minecraft-shapes"] .modal-content-themed.success { background-color: #8BC34A; border-color: #388E3C; color: #333333;}
+        body[data-theme="minecraft-shapes"] .modal-content-themed.error { background-color: #C8E6C9; border-color: #689F38; color: #333333;}
+        body[data-theme="minecraft-shapes"] .hint-box { background-color: #FFFACD; color: #333; border: 2px dashed #F0E68C; }
+
+        /* Common for all themed elements - font styles */
+        .header-title { font-family: 'Press Start 2P', cursive; text-shadow: 2px 2px 0px #000; }
+        .section-title { font-family: 'Press Start 2P', cursive; }
+        .quiz-item strong { /* Specific styling for strong in question blocks */ }
+        .quiz-item li { /* Specific styling for list items in question blocks */ }
+        .data-table th, .data-table td { border: 2px solid; padding: 8px; }
+
+
+        /* Navigation specific styles */
+        .tab-buttons-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 5px;
+            margin-bottom: 20px;
+        }
+        .tab-button {
+            background-color: #444;
+            color: #fff;
+            padding: 10px 15px;
+            border: 2px solid #222;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            flex-grow: 1; /* Allow buttons to grow */
+            text-align: center;
+            min-width: 120px; /* Minimum width for readability */
+            max-width: 180px; /* Maximum width to prevent excessive stretching */
+            transition: background-color 0.3s, border-color 0.3s, transform 0.1s;
+        }
+        .tab-button:hover {
+            background-color: #666;
+            transform: translateY(-2px);
+        }
+        .tab-button.active {
+            background-color: #888;
+            border-color: #000;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.5);
+            transform: translateY(0);
+        }
+        .tab-content {
+            display: none; /* Hidden by default */
+        }
+        .tab-content.active {
+            display: block; /* Show active tab */
+        }
+    </style>
+</head>
+<body data-theme="minecraft"> <!-- Default theme on load -->
+
+    <div class="main-container">
+        <header class="text-center mb-10">
+            <h1 class="header-title text-3xl md:text-5xl text-yellow-300">Math Adventure Hub!</h1>
+            <p class="header-title text-xl md:text-2xl mt-2 text-purple-300" id="current-topic-title">Select a Topic</p>
+        </header>
+
+        <nav class="tab-buttons-container">
+            <button class="tab-button" data-topic="multiplication">Multiplication & Division</button>
+            <button class="tab-button" data-topic="data">Handling Data</button>
+            <button class="tab-button" data-topic="angles">Angles</button>
+            <button class="tab-button" data-topic="position">Position & Movement</button>
+            <button class="tab-button" data-topic="fractions">Fractions</button>
+            <button class="tab-button" data-topic="decimals">Decimals</button>
+            <button class="tab-button" data-topic="shapes">2D & 3D Shapes</button>
+            <button class="tab-button" data-topic="area">Area</button>
+            <button class="tab-button" data-topic="time">Time</button>
+        </nav>
+
+        <main class="space-y-8">
+            <!-- TOPIC 1: Multiplication & Division -->
+            <section id="topic-multiplication" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-yellow-300 text-shadow-lg">Math Adventure!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2">Topic 1: Multiplication & Division</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Steve's Study Guide</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Multiplying by 10s and 100s</h3>
+                            <p>Think of it like adding blocks! When you multiply a number by 10, just add one zero to the end. When you multiply by 100, add two zeros!</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: <span class="font-bold">25 x 10 = 250</span>. We just added a zero block!</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Long Multiplication</h3>
+                            <p>When you multiply bigger numbers, like 175 x 5, you craft the answer piece by piece. Here's how:</p>
+                            <div class="study-guide-inner-panel p-4 mt-2 rounded">
+                                <ol class="list-decimal list-inside space-y-2">
+                                    <li><strong>Multiply the Ones:</strong> Start from the right. 5 x 5 = 25. Write down the 5 and carry the 2 over to the tens place.</li>
+                                    <li><strong>Multiply the Tens:</strong> 5 x 7 = 35. Now add the 2 you carried over: 35 + 2 = 37. Write down the 7 and carry the 3.</li>
+                                    <li><strong>Multiply the Hundreds:</strong> 5 x 1 = 5. Add the 3 you carried: 5 + 3 = 8. Write down the 8.</li>
+                                    <li><strong>Final Answer:</strong> You've crafted the number 875!</li>
+                                </ol>
+                            </div>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Long Division</h3>
+                            <p>Division is like sharing your blocks equally. For 290 ÷ 5, follow these steps:</p>
+                            <div class="study-guide-inner-panel p-4 mt-2 rounded">
+                                <ul class="list-disc list-inside space-y-2">
+                                    <li><strong>Divide:</strong> How many times does 5 go into 2? Zero. So, how many times does 5 go into 29? It goes in 5 times.</li>
+                                    <li><strong>Multiply:</strong> 5 x 5 = 25.</li>
+                                    <li><strong>Subtract:</strong> 29 - 25 = 4.</li>
+                                    <li><strong>Bring Down:</strong> Bring down the next number, which is 0, to make 40.</li>
+                                    <li><strong>Repeat:</strong> How many times does 5 go into 40? It goes in 8 times. The answer is 58!</li>
+                                    <li><strong>Remainders:</strong> Sometimes you have blocks left over. That's a remainder! For 14 ÷ 3, 3 goes into 14 four times (3x4=12), with 2 left over. The answer is 4 R2.</li>
+                                </ul>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Craft the Correct Answer!</h2>
+                    <div class="space-y-8">
+                        <!-- Question 1 (Existing) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. In a Minecraft world, a Creeper drops 60 gunpowder when defeated. If you defeat 2 Creepers, how much gunpowder do you get?</p>
+                            <input type="number" id="multiplication-q1-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('multiplication-q1', 120, 'To find the total, you multiply the gunpowder from one Creeper (60) by the number of Creepers (2). So, 60 x 2 = 120.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+                        <!-- Question 2 (Existing) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. You've mined 744 iron ores! You want to smelt them into ingots using 6 furnaces. If you divide the ore equally, how many ores go into each furnace?</p>
+                            <input type="number" id="multiplication-q2-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('multiplication-q2', 124, 'You need to solve 744 &divide; 6. <br>1. 7 &divide; 6 = 1 with a remainder of 1. <br>2. Bring down the 4 to make 14. 14 &divide; 6 = 2 with a remainder of 2. <br>3. Bring down the 4 to make 24. 24 &divide; 6 = 4. <br>The answer is 124.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+                         <!-- Question 3 (Existing) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. In a Roblox game, you mine 128 diamond blocks. Your friend Alex mines 4 times as many. How many diamond blocks does Alex mine?</p>
+                            <input type="number" id="multiplication-q3-input" class="input-themed w-full rounded mb-2">
+                             <button onclick="toggleHint('multiplication-hint3')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="multiplication-hint3" class="hidden hint-box p-3 rounded mb-2">The words "times as many" mean you need to multiply!</div>
+                            <button onclick="checkAnswer('multiplication-q3', 512, 'Since Alex mined 4 times as many, you need to calculate 128 &times; 4. <br>1. 4 &times; 8 = 32 (write 2, carry 3). <br>2. 4 &times; 2 = 8. Add the carried 3: 8 + 3 = 11 (write 1, carry 1). <br>3. 4 &times; 1 = 4. Add the carried 1: 4 + 1 = 5. <br>The answer is 512.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+                         <!-- Question 4 (Existing) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. You have 628 gold coins to share equally among your 5 Minecraft friends. How many coins does each friend get, and how many are left over? (Write your answer like this: 125 R3)</p>
+                            <input type="text" id="multiplication-q4-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('multiplication-hint4')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="multiplication-hint4" class="hidden hint-box p-3 rounded mb-2">This is a division problem, but the coins might not share perfectly. The leftover coins are the remainder!</div>
+                            <button onclick="checkAnswer('multiplication-q4', '125 R3', 'You need to solve 628 &divide; 5. <br>1. 6 &divide; 5 = 1 with a remainder of 1. <br>2. Bring down the 2 to make 12. 12 &divide; 5 = 2 with a remainder of 2. <br>3. Bring down the 8 to make 28. 28 &divide; 5 = 5 with a remainder of 3. <br>So each friend gets 125 coins, with 3 left over.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+
+                        <!-- NEW QUESTIONS START HERE -->
+
+                        <!-- Question 5 (Simple Multiplication) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. Steve is building a massive wall with 267 stone blocks per layer. If he builds 4 layers, how many stone blocks did he use in total?</p>
+                            <input type="number" id="multiplication-q5-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('multiplication-q5', 1068, 'To find the total, you multiply the number of blocks per layer (267) by the number of layers (4). So, 267 &times; 4 = 1068.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+
+                        <!-- Question 6 (Division with Remainder - basic) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. You found a huge cave with 613 valuable ores! You want to divide them into 3 equally sized chests. How many ores go into each chest, and how many are left over? (Write your answer like this: 204 R1)</p>
+                            <input type="text" id="multiplication-q6-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('multiplication-q6', '204 R1', 'You need to solve 613 &divide; 3. <br>1. 6 &divide; 3 = 2. <br>2. Bring down the 1. 1 &divide; 3 = 0 with a remainder of 1. <br>3. Bring down the 3 to make 13. 13 &divide; 3 = 4 with a remainder of 1. <br>So, 204 ores go into each chest, with 1 left over.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+
+                        <!-- Question 7 (Word Problem - Multi-step Multiplication & Addition) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. Your friend Enderman collected 6 boxes of rare enchanted books for your base. Each box had 128 books. Later, you found another 409 enchanted books scattered around. How many enchanted books do you have in total?</p>
+                            <input type="number" id="multiplication-q7-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('multiplication-hint7')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="multiplication-hint7" class="hidden hint-box p-3 rounded mb-2">First, find out how many books were in the 6 boxes. Then, add the books you found later!</div>
+                            <button onclick="checkAnswer('multiplication-q7', 1177, 'Step 1: Calculate the books from the boxes: 128 &times; 6 = 768 books. <br>Step 2: Add the additional books you found: 768 + 409 = 1177 books. <br>You have 1177 enchanted books!')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+
+                        <!-- Question 8 (Word Problem - Multi-step Subtraction & Multiplication) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. A villager had 350 emeralds. He spent 190 emeralds to trade for building materials. He then used the remaining emeralds to buy stacks of 1 emerald each. If he sold each stack for 5 gold ingots, how many gold ingots will he collect?</p>
+                            <input type="number" id="multiplication-q8-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('multiplication-hint8')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="multiplication-hint8" class="hidden hint-box p-3 rounded mb-2">First, figure out how many emeralds he had left after buying materials. Then, think about how many \'stacks\' of 1 emerald he had, and how much gold he got for each stack.</div>
+                            <button onclick="checkAnswer('multiplication-q8', 800, 'Step 1: Find out how many emeralds were left: 350 - 190 = 160 emeralds. <br>Step 2: Since each \'stack\' is 1 emerald, he had 160 stacks. <br>Step 3: Calculate the total gold ingots collected: 160 &times; 5 = 800 gold ingots.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+
+                        <!-- Question 9 (Word Problem - Division with Remainder, interpretation) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. You gathered 177 blocks of obsidian. You want to craft portals, and each portal requires 6 obsidian blocks. How many full portals can you craft, and how many obsidian blocks will be left over?</p>
+                            <input type="text" id="multiplication-q9-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('multiplication-hint9')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="multiplication-hint9" class="hidden hint-box p-3 rounded mb-2">This is a division problem with a remainder. The number of \'full\' portals will be the quotient, and the leftover blocks will be the remainder.</div>
+                            <button onclick="checkAnswer('multiplication-q9', '29 R3', 'You need to solve 177 &divide; 6. <br>1. 17 &divide; 6 = 2 with a remainder of 5. <br>2. Bring down the 7 to make 57. 57 &divide; 6 = 9 with a remainder of 3. <br>So, you can craft 29 full portals, and you\'ll have 3 obsidian blocks left over.')" class="action-button px-4 py-2 rounded w-full">Check My Craft</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 2: Handling Data -->
+            <section id="topic-data" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-yellow-300 text-shadow-lg">Math Adventure!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2">Topic 2: Handling Data - The Data Detective's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Detective Alex's Data Manual</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">What is Data? (Your Clues!)</h3>
+                            <p>Data is just information! Think of it like clues you collect to solve a mystery. It can be numbers, names, or anything that helps you understand something better. Like how many times a zombie spawns, or what food item players eat most!</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Reading Tables (Unlocking the Chests of Information)</h3>
+                            <p>Tables organize data in rows (going across) and columns (going down). To find a clue, look at where the row and column meet!</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: If a table shows "Player" in one column and "Diamonds Mined" in another, you can find out how many diamonds a specific player mined by finding their name in the Player column and looking across to the Diamonds Mined column.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Understanding Pictographs (Symbol Sleuthing!)</h3>
+                            <p>Pictographs use pictures or symbols to represent data. Each picture usually stands for a certain number of things. Always check the "key" to know what each symbol means!</p>
+                            <p class="study-guide-inner-panel p-4 mt-2 rounded">
+                                <strong>Key Tip:</strong> If one pickaxe symbol means 5 stone blocks, and you see 3 pickaxes, that means $3 \times 5 = 15$ stone blocks!
+                            </p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Interpreting Bar Graphs (Reading the Tower of Truth!)</h3>
+                            <p>Bar graphs use bars to show quantities. The taller the bar, the more of something there is. Always look at the labels on the sides (the "axes") to understand what the bars represent!</p>
+                            <p class="question-block p-3 mt-2 rounded">One axis might show "Types of Mobs" and the other "Number of Mobs Defeated". You'd look at the height of each bar to see how many of each mob were defeated.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Organizing Data (Sorting Your Loot!)</h3>
+                            <p>Before you make a graph, you often need to organize your raw data. A tally chart uses tally marks (groups of five: <span class="font-bold">IIII</span> for 5) to count things, and a frequency table just uses numbers.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Crack the Data Cases!</h2>
+                    <div class="space-y-8">
+                        <!-- Question 1 (Table Reading) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. The Adventurer's Guild keeps track of resources collected. Look at the table below:</p>
+                            <table class="data-table mb-4">
+                                <thead>
+                                    <tr><th>Adventurer</th><th>Iron Ingots</th><th>Gold Ingots</th><th>Emeralds</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Sparkle</td><td>15</td><td>8</td><td>3</td></tr>
+                                    <tr><td>Blaze</td><td>20</td><td>5</td><td>6</td></tr>
+                                    <tr><td>Shadow</td><td>12</td><td>10</td><td>4</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-lg mb-2 question-text">How many Emeralds did Blaze collect?</p>
+                            <input type="number" id="data-q1-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('data-q1', 6, 'To find the answer, find \'Blaze\' in the Adventurer column, then look across to the \'Emeralds\' column.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 2 (Pictograph Interpretation) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. A group of Roblox players voted for their favorite game modes. Here's a pictograph of their votes:</p>
+                            <ul class="list-disc list-inside mb-4">
+                                <li>Obby: 🎮 🎮 🎮</li>
+                                <li>Tycoon: 🎮 🎮 🎮 🎮 🎮</li>
+                                <li>Simulator: 🎮 🎮 🎮 🎮</li>
+                            </ul>
+                            <p class="text-lg mb-2 font-bold question-text">Key: Each 🎮 represents 2 players.</p>
+                            <p class="text-lg mb-2 question-text">How many players chose Tycoon as their favorite game mode?</p>
+                            <input type="number" id="data-q2-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('data-q2', 10, 'Count the number of 🎮 symbols next to \'Tycoon\', which is 5. Since each 🎮 represents 2 players, multiply 5 by 2: 5 &times; 2 = 10 players.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 3 (Bar Graph Interpretation & Comparison) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. The Fortnite Battle Pass tracks how many wins each team gets in a week. Imagine a bar graph where:</p>
+                            <ul class="list-disc list-inside mb-4">
+                                <li>Team Alpha has a bar reaching 15 wins.</li>
+                                <li>Team Bravo has a bar reaching 10 wins.</li>
+                                <li>Team Charlie has a bar reaching 20 wins.</li>
+                            </ul>
+                            <p class="text-lg mb-2 question-text">Which team had the fewest wins?</p>
+                            <input type="text" id="data-q3-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('data-q3', 'Team Bravo', 'To find the fewest wins, look for the shortest bar (or the smallest number). Team Bravo has 10 wins, which is less than Team Alpha (15) and Team Charlie (20).')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 4 (Organizing Data - Tally/Frequency) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. You encountered different mobs during your exploration: Zombie, Skeleton, Zombie, Spider, Zombie, Skeleton, Spider, Zombie.</p>
+                            <p class="text-lg mb-2 question-text">How many Zombies did you encounter?</p>
+                            <input type="number" id="data-q4-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('data-q4', 4, 'To find the number of Zombies, simply count how many times \'Zombie\' appears in the list: Zombie, Skeleton, Zombie, Spider, Zombie, Skeleton, Spider, Zombie. There are 4 Zombies.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 5 (Multi-step - from Table) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. Using the Adventurer's Guild table from Question 1:</p>
+                            <table class="data-table mb-4">
+                                <thead>
+                                    <tr><th>Adventurer</th><th>Iron Ingots</th><th>Gold Ingots</th><th>Emeralds</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Sparkle</td><td>15</td><td>8</td><td>3</td></tr>
+                                    <tr><td>Blaze</td><td>20</td><td>5</td><td>6</td></tr>
+                                    <tr><td>Shadow</td><td>12</td><td>10</td><td>4</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-lg mb-2 question-text">How many total Ingots (Iron and Gold combined) did Shadow collect?</p>
+                            <input type="number" id="data-q5-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint5')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint5" class="hidden hint-box p-3 rounded mb-2">Find Shadow's Iron Ingots and Gold Ingots from the table, then add them together!</div>
+                            <button onclick="checkAnswer('data-q5', 22, 'Shadow collected 12 Iron Ingots and 10 Gold Ingots. To find the total, add them together: 12 + 10 = 22 Ingots.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 6 (Multi-step - from Pictograph) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. Using the Roblox Favorite Game Modes pictograph from Question 2:</p>
+                            <ul class="list-disc list-inside mb-4">
+                                <li>Obby: 🎮 🎮 🎮</li>
+                                <li>Tycoon: 🎮 🎮 🎮 🎮 🎮</li>
+                                <li>Simulator: 🎮 🎮 🎮 🎮</li>
+                            </ul>
+                            <p class="text-lg mb-2 font-bold question-text">Key: Each 🎮 represents 2 players.</p>
+                            <p class="text-lg mb-2 question-text">How many more players chose Tycoon than Obby?</p>
+                            <input type="number" id="data-q6-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint6" class="hidden hint-box p-3 rounded mb-2">First, figure out the total number of players for Tycoon and Obby using the key. Then, find the difference!</div>
+                            <button onclick="checkAnswer('data-q6', 4, 'Tycoon: 5 🎮 &times; 2 players/🎮 = 10 players. <br>Obby: 3 🎮 &times; 2 players/🎮 = 6 players. <br>To find how many more, subtract: 10 - 6 = 4 more players.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 7 (Multi-step - from Bar Graph) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. Using the Fortnite Team Wins from Question 3:</p>
+                            <ul class="list-disc list-inside mb-4">
+                                <li>Team Alpha: 15 wins.</li>
+                                <li>Team Bravo: 10 wins.</li>
+                                <li>Team Charlie: 20 wins.</li>
+                            </ul>
+                            <p class="text-lg mb-2 question-text">What is the total number of wins for all three teams combined?</p>
+                            <input type="number" id="data-q7-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint7-new')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint7-new" class="hidden hint-box p-3 rounded mb-2">To find the total for all teams combined, you need to add up their individual wins.</div>
+                            <button onclick="checkAnswer('data-q7', 45, 'To find the total wins, add the wins from all three teams: 15 (Alpha) + 10 (Bravo) + 20 (Charlie) = 45 wins.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 8 (New - Table - Total for a specific column) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. Using the Adventurer's Guild table from Question 1:</p>
+                            <table class="data-table mb-4">
+                                <thead>
+                                    <tr><th>Adventurer</th><th>Iron Ingots</th><th>Gold Ingots</th><th>Emeralds</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Sparkle</td><td>15</td><td>8</td><td>3</td></tr>
+                                    <tr><td>Blaze</td><td>20</td><td>5</td><td>6</td></tr>
+                                    <tr><td>Shadow</td><td>12</td><td>10</td><td>4</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-lg mb-2 question-text">What is the total number of Gold Ingots collected by ALL adventurers?</p>
+                            <input type="number" id="data-q8-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint8-new')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint8-new" class="hidden hint-box p-3 rounded mb-2">Look at the 'Gold Ingots' column and add up all the numbers.</div>
+                            <button onclick="checkAnswer('data-q8', 23, 'To find the total Gold Ingots, add the amounts collected by each adventurer: 8 (Sparkle) + 5 (Blaze) + 10 (Shadow) = 23 Gold Ingots.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 9 (New - Pictograph - How many symbols) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. Using the Roblox Favorite Game Modes pictograph from Question 2:</p>
+                            <ul class="list-disc list-inside mb-4">
+                                <li>Obby: 🎮 🎮 🎮</li>
+                                <li>Tycoon: 🎮 🎮 🎮 🎮 🎮</li>
+                                <li>Simulator: 🎮 🎮 🎮 🎮</li>
+                            </ul>
+                            <p class="text-lg mb-2 font-bold question-text">Key: Each 🎮 represents 2 players.</p>
+                            <p class="text-lg mb-2 question-text">If 14 players chose "Tower Defense", how many 🎮 symbols would that be?</p>
+                            <input type="number" id="data-q9-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint9-new')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint9-new" class="hidden hint-box p-3 rounded mb-2">If each symbol represents 2 players, and you have a total number of players, you need to divide to find how many symbols!</div>
+                            <button onclick="checkAnswer('data-q9', 7, 'Since each 🎮 represents 2 players, and 14 players chose Tower Defense, you need to divide 14 by 2: 14 &divide; 2 = 7 🎮 symbols.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 10 (New - Bar Graph - Difference between highest/lowest) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. Using the Fortnite Team Wins from Question 3:</p>
+                            <ul class="list-disc list-inside mb-4">
+                                <li>Team Alpha: 15 wins.</li>
+                                <li>Team Bravo: 10 wins.</li>
+                                <li>Team Charlie: 20 wins.</li>
+                            </ul>
+                            <p class="text-lg mb-2 question-text">What is the difference in wins between the team with the MOST wins and the team with the FEWEST wins?</p>
+                            <input type="number" id="data-q10-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint10-new')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint10-new" class="hidden hint-box p-3 rounded mb-2">First, identify the highest number of wins and the lowest number of wins. Then, subtract the smaller number from the larger number.</div>
+                            <button onclick="checkAnswer('data-q10', 10, 'The team with the most wins is Team Charlie (20 wins). The team with the fewest wins is Team Bravo (10 wins). The difference is 20 - 10 = 10 wins.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                        <!-- Question 11 (New - Organizing Data - Total items) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. You encountered different mobs during your exploration: Zombie, Skeleton, Zombie, Spider, Zombie, Skeleton, Spider, Zombie.</p>
+                            <p class="text-lg mb-2 question-text">What is the total number of mob encounters (all types) you had?</p>
+                            <input type="number" id="data-q11-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint11-new')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint11-new" class="hidden hint-box p-3 rounded mb-2">Just count every single mob mentioned in the list!</div>
+                            <button onclick="checkAnswer('data-q11', 8, 'To find the total number of mob encounters, count every item in the list: Zombie, Skeleton, Zombie, Spider, Zombie, Skeleton, Spider, Zombie. There are 8 total mob encounters.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+
+                         <!-- Question 12 (New - Word Problem combining table & multiplication) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. Using the Adventurer's Guild table from Question 1:</p>
+                            <table class="data-table mb-4">
+                                <thead>
+                                    <tr><th>Adventurer</th><th>Iron Ingots</th><th>Gold Ingots</th><th>Emeralds</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Sparkle</td><td>15</td><td>8</td><td>3</td></tr>
+                                    <tr><td>Blaze</td><td>20</td><td>5</td><td>6</td></tr>
+                                    <tr><td>Shadow</td><td>12</td><td>10</td><td>4</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-lg mb-2 question-text">If each Emerald can be traded for 3 Iron Ingots, how many Iron Ingots could Sparkle trade ALL of her Emeralds for?</p>
+                            <input type="number" id="data-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('data-hint12-new')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="data-hint12-new" class="hidden hint-box p-3 rounded mb-2">First, find out how many Emeralds Sparkle has from the table. Then, multiply that number by how many Iron Ingots each Emerald trades for.</div>
+                            <button onclick="checkAnswer('data-q12', 9, 'Sparkle has 3 Emeralds. Since each Emerald trades for 3 Iron Ingots, she could trade for 3 &times; 3 = 9 Iron Ingots.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 3: Angles -->
+            <section id="topic-angles" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-yellow-300 text-shadow-lg">Roblox Math Adventure!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2">Topic 3: Angles - The Angle Explorer's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Noob's Angle Almanac</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">What is an Angle? (The Bend in the Road!)</h3>
+                            <p>Imagine two lines (or "rays") that start at the same point, like two arms of your Roblox character meeting at the elbow! The space or "opening" between these two lines is an angle. The point where they meet is called the <strong>vertex</strong>.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Naming Angles (Giving Them a Cool Name!)</h3>
+                            <p>Angles can be named in a few ways:</p>
+                            <ul class="list-disc list-inside space-y-2 question-block p-4 rounded-lg mt-2">
+                                <li><strong>By their vertex:</strong> If the vertex is point 'B', you can call it ∠B.</li>
+                                <li><strong>By three points:</strong> Using a point on each ray and the vertex in the middle, like ∠ABC.</li>
+                                <li><strong>By a number:</strong> Sometimes a number is placed inside the angle, like ∠1.</li>
+                            </ul>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Types of Angles (Different Shapes, Different Angles!)</h3>
+                            <div class="study-guide-inner-panel p-4 mt-2 rounded">
+                                <p><strong>Right Angle:</strong> Looks like a perfect corner, like the corner of a square or a Roblox block! It measures exactly 90 degrees. (Think of the 'L' shape your arm makes when bent at 90 degrees.)</p>
+                                <p><strong>Acute Angle:</strong> An "a-cute little angle"! It's smaller than a right angle (less than 90 degrees).</p>
+                                <p><strong>Obtuse Angle:</strong> "Obtuse is large and loose!" It's bigger than a right angle but less than a straight line (between 90 and 180 degrees).</p>
+                                <p><strong>Straight Angle:</strong> A straight line! It measures exactly 180 degrees.</p>
+                            </div>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Measuring and Drawing Angles (Using Your Protractor Tool!)</h3>
+                            <p>We use a tool called a <strong>protractor</strong> to measure and draw angles. It's like a special ruler for angles! It has numbers from 0 to 180 degrees.</p>
+                            <p class="question-block p-3 mt-2 rounded"><strong>Tip:</strong> When measuring, make sure the center of the protractor is on the vertex of the angle, and one ray lines up with the 0-degree mark.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Estimating Angles (Guessing Like a Pro Builder!)</h3>
+                            <p>Sometimes you need to guess how big an angle is. Think about how it compares to a right angle (90 degrees) or a straight line (180 degrees). Is it bigger or smaller?</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Angle Explorer's Challenge!</h2>
+                    <div class="space-y-8">
+                        <!-- Question 1: Identifying Angle Type -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. Imagine your Roblox character making an 'L' shape with its arm, like the corner of a perfectly placed block. What kind of angle is this?</p>
+                            <input type="text" id="angles-q1-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Acute, Right, Obtuse, Straight">
+                            <button onclick="checkAnswer('angles-q1', 'Right', 'A right angle measures exactly 90 degrees and looks like a perfect corner, just like an "L" shape or the corner of a square block!')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 2: Identifying Angle Type (Less than 90) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. If a treasure chest lid is only opened a tiny bit, so the angle is smaller than an 'L' shape, what kind of angle is formed?</p>
+                            <input type="text" id="angles-q2-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Acute, Right, Obtuse, Straight">
+                            <button onclick="checkAnswer('angles-q2', 'Acute', 'An acute angle is always less than 90 degrees. Think of it as a "cute little angle" because it\'s small!')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 3: Identifying Angle Type (More than 90, less than 180) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. A giant Roblox fan is slowly closing, forming an angle wider than an 'L' but not completely flat. What type of angle is this?</p>
+                            <input type="text" id="angles-q3-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Acute, Right, Obtuse, Straight">
+                            <button onclick="checkAnswer('angles-q3', 'Obtuse', 'An obtuse angle is greater than 90 degrees but less than 180 degrees. It\'s a wider angle than a right angle but not a straight line.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 4: Estimating Angle (Right Angle) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. Estimate the measure of a right angle. How many degrees is it?</p>
+                            <input type="number" id="angles-q4-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('angles-q4', 90, 'A right angle always measures exactly 90 degrees.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 5: Naming Angles -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. If you have an angle with points X, Y, and Z, where Y is the vertex, how can you name this angle using all three points?</p>
+                            <input type="text" id="angles-q5-input" class="input-themed w-full rounded mb-2" placeholder="e.g., ABC">
+                            <button onclick="checkAnswer('angles-q5', 'XYZ', 'When naming an angle with three points, the vertex (the middle point where the lines meet) always goes in the middle. So, it is &#8737;XYZ.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 6: Estimating Angle (Acute Example) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. If a clock shows the time 1:00, the angle between the hour and minute hand is small. Would you estimate this angle to be closer to 30 degrees, 90 degrees, or 120 degrees?</p>
+                            <input type="number" id="angles-q6-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('angles-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="angles-hint6" class="hidden hint-box p-3 rounded mb-2">A clock face is 360 degrees. There are 12 numbers. What's the angle between each number? Then, how many numbers between 12 and 1?</div>
+                            <button onclick="checkAnswer('angles-q6', 30, 'The angle formed by the hour and minute hand at 1:00 is 30 degrees. (A full circle is 360 degrees, and there are 12 numbers on a clock face. 360 &divide; 12 = 30 degrees per number. From 12 to 1 is one such interval).')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 7: Identifying Angle Type (Straight Angle) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. If you place two Roblox straight-line blocks end-to-end to form one long straight line, what type of angle is formed at the point where they connect?</p>
+                            <input type="text" id="angles-q7-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Acute, Right, Obtuse, Straight">
+                            <button onclick="checkAnswer('angles-q7', 'Straight', 'A straight angle forms a straight line and measures exactly 180 degrees.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 8: Naming Angles (Vertex Only) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. If an angle's vertex is labeled 'A', what is the simplest way to name this angle?</p>
+                            <input type="text" id="angles-q8-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Angle B">
+                            <button onclick="checkAnswer('angles-q8', 'Angle A', 'The simplest way to name an angle is by its vertex, if there is no confusion with other angles sharing the same vertex. So, Angle A or &#8737;A.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 9: Estimating Angle (Obtuse Example) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. Imagine a Roblox character's leg bent wide, almost flat, but not quite a straight line. Would you estimate this angle to be closer to 45 degrees, 90 degrees, or 150 degrees?</p>
+                            <input type="number" id="angles-q9-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('angles-hint9')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="angles-hint9" class="hidden hint-box p-3 rounded mb-2">An obtuse angle is greater than 90 degrees but less than 180 degrees. Which option fits this description best?</div>
+                            <button onclick="checkAnswer('angles-q9', 150, 'An obtuse angle is between 90 and 180 degrees. 150 degrees is an obtuse angle, fitting the description of a leg bent wide but not flat.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                        <!-- Question 10: Using a Protractor Concept (Simple Calculation) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. If you use your protractor and one ray of an angle lines up with 0 degrees, and the other ray lines up with the 60-degree mark, what is the measure of this angle?</p>
+                            <input type="number" id="angles-q10-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('angles-q10', 60, 'The measure of the angle is the difference between where the two rays point on the protractor. If one is at 0 and the other at 60, the angle is 60 - 0 = 60 degrees.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                         <!-- Question 11: Word Problem - Identifying angle in real world -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. A Roblox character is standing perfectly upright. The angle formed between their torso and their leg is a specific type. What kind of angle is this?</p>
+                            <input type="text" id="angles-q11-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Acute, Right, Obtuse, Straight">
+                            <button onclick="toggleHint('angles-hint11')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="angles-hint11" class="hidden hint-box p-3 rounded mb-2">Think about the corner of a wall or a table. What angle does that look like?</div>
+                            <button onclick="checkAnswer('angles-q11', 'Right', 'When a character stands perfectly upright, their torso and leg form a 90-degree angle, which is a right angle.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+
+                         <!-- Question 12: Word Problem - Multi-step Angle Calculation (complementary/supplementary concept without naming) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. A builder is setting up two laser beams that form a straight line (180 degrees). If one beam is already set at 70 degrees from the starting point, what angle does the second beam need to be set at to complete the straight line?</p>
+                            <input type="number" id="angles-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('angles-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="angles-hint12" class="hidden hint-box p-3 rounded mb-2">If the total angle for a straight line is 180 degrees, and you already have part of it, you need to subtract to find the missing part.</div>
+                            <button onclick="checkAnswer('angles-q12', 110, 'A straight line forms a 180-degree angle. If one beam is at 70 degrees, the second beam needs to be at 180 - 70 = 110 degrees to complete the straight line.')" class="action-button px-4 py-2 rounded w-full">Check My Angle!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 4: Position & Movement -->
+            <section id="topic-position" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-blue-300 text-shadow-lg">Fortnite Math Zone!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2 text-purple-300">Topic 4: Position & Movement - The Navigator's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Battle Bus Briefing - Navigation Basics</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Cardinal Directions (Your Compass Points!)</h3>
+                            <p>Just like in Fortnite, knowing your directions is key to winning! There are four main cardinal directions:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 text-purple-200">
+                                <li><strong>North (N):</strong> Usually points to the top of a map.</li>
+                                <li><strong>South (S):</strong> Opposite of North, points to the bottom.</li>
+                                <li><strong>East (E):</strong> Points to the right side of a map.</li>
+                                <li><strong>West (W):</strong> Opposite of East, points to the left side.</li>
+                            </ul>
+                            <p class="mt-2">You can remember them with the phrase: "Never Eat Soggy Waffles!" (N, E, S, W).</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Intermediate Directions (Filling in the Gaps!)</h3>
+                            <p>Between the main directions are the intermediate (or intercardinal) directions:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 text-purple-200">
+                                <li><strong>Northeast (NE):</strong> Between North and East.</li>
+                                <li><strong>Southeast (SE):</strong> Between South and East.</li>
+                                <li><strong>Southwest (SW):</strong> Between South and West.</li>
+                                <li><strong>Northwest (NW):</strong> Between North and West.</li>
+                            </ul>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Giving Directions (Calling Out to Your Squad!)</h3>
+                            <p>When you're telling someone how to get somewhere, you use these directions and sometimes numbers (like "move 3 squares East").</p>
+                            <div class="question-block p-4 mt-2 rounded">
+                                <p><strong>Example:</strong> If you are at a point on a map, and your teammate is 2 squares to your right, you tell them to go "2 squares East".</p>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Navigator's Challenge - Get That Victory Royale!</h2>
+                    <div class="space-y-8">
+
+                        <!-- Map Grid for visual questions -->
+                        <div class="main-panel p-4 rounded-lg">
+                            <h3 class="font-bold text-xl mb-3 text-white text-center">Fortnite Map Grid (for Questions 5-10)</h3>
+                            <div id="position-fortnite-map" class="map-grid">
+                                <!-- Cells will be generated by JS -->
+                            </div>
+                            <p class="text-sm text-center text-purple-300">Your current location is marked in gold, target locations in orange-red.</p>
+                        </div>
+
+                        <!-- Question 1: Cardinal Direction Identification -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. If your compass is pointing towards the top of your Fortnite map, what cardinal direction are you facing?</p>
+                            <input type="text" id="position-q1-input" class="input-themed w-full rounded mb-2" placeholder="e.g., North">
+                            <button onclick="checkAnswer('position-q1', 'North', 'The top of most maps, including the Fortnite map, typically represents North.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 2: Opposite Cardinal Direction -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. If you are facing West, what cardinal direction is directly behind you?</p>
+                            <input type="text" id="position-q2-input" class="input-themed w-full rounded mb-2" placeholder="e.g., East">
+                            <button onclick="checkAnswer('position-q2', 'East', 'East is the opposite direction of West. If you face West, East is behind you.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 3: Intermediate Direction -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. You see an enemy camp located exactly between North and East. What intermediate direction is this?</p>
+                            <input type="text" id="position-q3-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Southeast">
+                            <button onclick="checkAnswer('position-q3', 'Northeast', 'The direction exactly between North and East is Northeast.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 4: Remembering the Phrase -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. What is the common phrase used to remember the four main cardinal directions (N, E, S, W)? (Type the full phrase)</p>
+                            <input type="text" id="position-q4-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Never Eat Soggy Waffles">
+                            <button onclick="checkAnswer('position-q4', 'Never Eat Soggy Waffles', 'The mnemonic "Never Eat Soggy Waffles" helps remember North, East, South, West in order.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 5: Simple Movement on Map -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. On the map, if you are at <strong>(A1)</strong> and need to get to <strong>(A3)</strong>, how many squares and in what cardinal direction should you move?</p>
+                            <input type="text" id="position-q5-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 2 squares East">
+                            <button onclick="setMapHighlight('position-fortnite-map', 0,0,0,2); toggleHint('position-hint5')" class="action-button px-4 py-2 rounded w-full mb-2">Show on Map / Need a Hint?</button>
+                            <div id="position-hint5" class="hidden hint-box p-3 rounded mb-2">Start at A1 (top-left). A3 is two cells to the right. What direction is "right" on a map?</div>
+                            <button onclick="checkAnswer('position-q5', '2 squares East', 'To move from A1 to A3, you move 2 squares horizontally to the right. On a map, right is East.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 6: Simple Movement on Map (Vertical) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. You are at <strong>(D4)</strong>, and the next safe zone is at <strong>(B4)</strong>. How many squares and in what cardinal direction should you move?</p>
+                            <input type="text" id="position-q6-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 2 squares South">
+                            <button onclick="setMapHighlight('position-fortnite-map', 3,3,1,3); toggleHint('position-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Show on Map / Need a Hint?</button>
+                            <div id="position-hint6" class="hidden hint-box p-3 rounded mb-2">Start at D4 (bottom-right). B4 is two cells up. What direction is "up" on a map?</div>
+                            <button onclick="checkAnswer('position-q6', '2 squares North', 'To move from D4 to B4, you move 2 squares vertically upwards. On a map, up is North.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 7: Intermediate Direction Movement -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. Your squadmate is at <strong>(B2)</strong>. You need to tell them to go to a V-Bucks stash at <strong>(A1)</strong>. What direction should they move?</p>
+                            <input type="text" id="position-q7-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Northeast">
+                            <button onclick="setMapHighlight('position-fortnite-map', 1,1,0,0); toggleHint('position-hint7')" class="action-button px-4 py-2 rounded w-full mb-2">Show on Map / Need a Hint?</button>
+                            <div id="position-hint7" class="hidden hint-box p-3 rounded mb-2">From B2, A1 is both up and left. What intermediate direction is up-left?</div>
+                            <button onclick="checkAnswer('position-q7', 'Northwest', 'From B2, A1 is one square North and one square West. This combined direction is Northwest.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 8: Reverse Direction -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. If a storm is moving from the North towards your location, what direction should you move to escape it?</p>
+                            <input type="text" id="position-q8-input" class="input-themed w-full rounded mb-2" placeholder="e.g., West">
+                            <button onclick="checkAnswer('position-q8', 'South', 'If the storm is coming from the North, you should move in the opposite direction to escape it, which is South.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 9: Multi-step Movement on Map -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. You are at <strong>(C2)</strong>. First, move 1 square North, then 2 squares East. What is your final location?</p>
+                            <input type="text" id="position-q9-input" class="input-themed w-full rounded mb-2" placeholder="e.g., A1">
+                            <button onclick="setMapHighlight('position-fortnite-map', 2,1,1,3, [ [2,1], [1,1], [1,2], [1,3] ]); toggleHint('position-hint9')" class="action-button px-4 py-2 rounded w-full mb-2">Show Path / Need a Hint?</button>
+                            <div id="position-hint9" class="hidden hint-box p-3 rounded mb-2">Start at C2. Moving North means moving up a row. Moving East means moving right a column. Track your position after each step.</div>
+                            <button onclick="checkAnswer('position-q9', 'B4', 'Starting at C2 (row 2, column 1): <br>1. 1 square North moves you to B2 (row 1, column 1). <br>2. 2 squares East moves you from B2 to B4 (row 1, column 3). <br>Your final location is B4.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 10: Multi-step Movement on Map (Different order) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. You are at <strong>(B3)</strong>. First, move 2 squares South, then 1 square West. What is your final location?</p>
+                            <input type="text" id="position-q10-input" class="input-themed w-full rounded mb-2" placeholder="e.g., A1">
+                            <button onclick="setMapHighlight('position-fortnite-map', 1,2,3,1, [ [1,2], [2,2], [3,2], [3,1] ]); toggleHint('position-hint10')" class="action-button px-4 py-2 rounded w-full mb-2">Show Path / Need a Hint?</button>
+                            <div id="position-hint10" class="hidden hint-box p-3 rounded mb-2">Start at B3. Moving South means moving down rows. Moving West means moving left columns. Trace your path!</div>
+                            <button onclick="checkAnswer('position-q10', 'D2', 'Starting at B3 (row 1, column 2): <br>1. 2 squares South moves you to D3 (row 3, column 2). <br>2. 1 square West moves you from D3 to D2 (row 3, column 1). <br>Your final location is D2.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 11: Word Problem - Real-world application of cardinal directions -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. Your drone is flying from your location towards a supply drop. If the supply drop is directly to your left, what cardinal direction is the drone flying?</p>
+                            <input type="text" id="position-q11-input" class="input-themed w-full rounded mb-2" placeholder="e.g., South">
+                            <button onclick="toggleHint('position-hint11')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="position-hint11" class="hidden hint-box p-3 rounded mb-2">Think about a standard map where North is up. What direction is to your left?</div>
+                            <button onclick="checkAnswer('position-q11', 'West', 'On a standard map, if North is up, then West is to the left.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+
+                        <!-- Question 12: Word Problem - Intermediate direction combination -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. You need to build a defensive wall that extends both downwards and to the right from your current position. What intermediate direction would this wall be heading?</p>
+                            <input type="text" id="position-q12-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Northwest">
+                            <button onclick="toggleHint('position-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="position-hint12" class="hidden hint-box p-3 rounded mb-2">"Downwards" corresponds to South, and "to the right" corresponds to East. Combine these.</div>
+                            <button onclick="checkAnswer('position-q12', 'Southeast', 'Moving downwards is South, and moving to the right is East. Combining these movements results in the Southeast direction.')" class="action-button px-4 py-2 rounded w-full">Check Position!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 5: Fractions -->
+            <section id="topic-fractions" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-yellow-300 text-shadow-lg">Roblox Pizza Party!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2 text-orange-400">Topic 5: Fractions - The Chef's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Chef Bloxy's Fraction Feast!</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">What are Fractions? (Sharing Pizza Slices!)</h3>
+                            <p>Fractions are parts of a whole! Imagine a whole pizza. If you cut it into 8 equal slices and eat 3, you've eaten <span class="font-bold">3/8</span> of the pizza. The top number is the <strong>numerator</strong> (how many parts you have), and the bottom number is the <strong>denominator</strong> (how many total equal parts make the whole).</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Comparing & Ordering Fractions (Who Gets More Toppings?)</h3>
+                            <p>To compare fractions, it's easiest if they have the same denominator. If they do, just compare the numerators! If not, you might need to find a <strong>common denominator</strong>.</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: To compare 1/2 and 3/4, change 1/2 to 2/4. Now you can see 3/4 is bigger than 2/4.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Improper Fractions & Mixed Numbers (Full Pizzas & Leftovers!)</h3>
+                            <p>An <strong>improper fraction</strong> is when the numerator is bigger than or equal to the denominator (like 5/4 pizza slices). This means you have at least one whole pizza!</p>
+                            <p>A <strong>mixed number</strong> shows how many whole pizzas you have, plus any extra slices (like 1 whole pizza and 1/4 of another, written as 1 1/4).</p>
+                            <p class="study-guide-inner-panel p-4 mt-2 rounded">
+                                <strong>Converting Tip:</strong> To change 5/4 to a mixed number, divide 5 by 4. You get 1 with a remainder of 1. So, 1 whole and 1/4 left, or 1 1/4.
+                            </p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Simplifying Fractions (Tidying Up Your Recipe!)</h3>
+                            <p>Simplifying (or reducing) a fraction means finding an equivalent fraction with smaller numbers. You do this by dividing both the numerator and denominator by the same biggest number they both can be divided by (their greatest common factor).</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: 4/8 can be simplified to 1/2 because both 4 and 8 can be divided by 4.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Fractions as Division (Sharing Made Easy!)</h3>
+                            <p>A fraction bar is just a division sign! So, 3/4 can be read as "3 divided by 4".</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: If 3 pizzas are shared equally among 4 friends, each friend gets 3 &divide; 4 = 3/4 of a pizza.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Adding & Subtracting Fractions (Combining or Taking Away Toppings!)</h3>
+                            <p>Just like comparing, you need a <strong>common denominator</strong> to add or subtract fractions. Once the denominators are the same, you just add or subtract the numerators, and keep the denominator the same!</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: 1/5 + 2/5 = 3/5. But for 1/2 + 1/4, change 1/2 to 2/4. Then 2/4 + 1/4 = 3/4.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Multiplying Fractions (Scaling Up Your Snack!)</h3>
+                            <p>Multiplying a fraction by a whole number is like finding a "fraction of a group". Multiply the whole number by the numerator, and keep the denominator the same. You might need to simplify your answer!</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: 1/3 of 9 = (1 &times; 9) / 3 = 9/3 = 3. Or 1/3 &times; 9 = 3.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Roblox Fraction Challenges!</h2>
+                    <div class="space-y-8">
+
+                        <!-- Question 1: Comparing Fractions -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. Noob ate 3/8 of a pizza, and Guest ate 5/8 of the same pizza. Who ate more pizza?</p>
+                            <input type="text" id="fractions-q1-input" class="input-themed w-full rounded mb-2" placeholder="Noob or Guest">
+                            <button onclick="checkAnswer('fractions-q1', 'Guest', 'Both fractions have the same denominator (8). Compare the numerators: 5 is greater than 3. So, 5/8 is greater than 3/8, meaning Guest ate more.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 2: Mixed Number to Improper Fraction -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. You have 2 whole pizzas and 1/3 of another pizza. Write this as an improper fraction.</p>
+                            <input type="text" id="fractions-q2-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 7/3">
+                            <button onclick="checkAnswer('fractions-q2', '7/3', 'Each whole pizza has 3/3 slices. So, 2 whole pizzas are 2 &times; 3/3 = 6/3. Add the extra 1/3: 6/3 + 1/3 = 7/3.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 3: Simplifying Fractions -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. A pizza was cut into 12 slices, and you ate 6 of them. What is 6/12 simplified to its lowest terms?</p>
+                            <input type="text" id="fractions-q3-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 1/2">
+                            <button onclick="checkAnswer('fractions-q3', '1/2', 'To simplify 6/12, find the largest number that divides both 6 and 12, which is 6. Divide both by 6: 6 &divide; 6 = 1 and 12 &divide; 6 = 2. So, 6/12 simplifies to 1/2.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 4: Adding Fractions (Common Denominator) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. You ate 1/4 of a cake, and your friend ate 2/4 of the same cake. What fraction of the cake did you eat together?</p>
+                            <input type="text" id="fractions-q4-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 3/4">
+                            <button onclick="checkAnswer('fractions-q4', '3/4', 'Since the denominators are already the same, just add the numerators: 1 + 2 = 3. Keep the denominator the same: 3/4.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 5: Subtracting Fractions (Common Denominator) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. You started with 7/10 of a fruit punch. You drank 3/10 of it. How much fruit punch is left?</p>
+                            <input type="text" id="fractions-q5-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 4/10">
+                            <button onclick="checkAnswer('fractions-q5', '4/10', 'Since the denominators are the same, subtract the numerators: 7 - 3 = 4. Keep the denominator the same: 4/10. (This can also be simplified to 2/5).')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 6: Fractions as Division Word Problem -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. Chef Bloxy made 3 delicious cakes. He needs to share them equally among 4 Robloxian friends. What fraction of a cake does each friend get?</p>
+                            <input type="text" id="fractions-q6-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 3/4">
+                            <button onclick="toggleHint('fractions-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint6" class="hidden hint-box p-3 rounded mb-2">Remember, a fraction can represent division. The total number of items is the numerator, and the number of groups you're dividing by is the denominator.</div>
+                            <button onclick="checkAnswer('fractions-q6', '3/4', 'When you share 3 cakes among 4 friends, it is 3 divided by 4, which is written as the fraction 3/4.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 7: Multiplying Fraction by Whole Number Word Problem -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. You have 20 Robux. You decide to spend 1/4 of your Robux on a new avatar outfit. How many Robux did you spend?</p>
+                            <input type="number" id="fractions-q7-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('fractions-hint7')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint7" class="hidden hint-box p-3 rounded mb-2">To find a fraction "of" a number, you multiply the fraction by the number. (1/4) &times; 20.</div>
+                            <button onclick="checkAnswer('fractions-q7', 5, 'To find 1/4 of 20, you multiply 1/4 by 20: (1/4) &times; 20 = 20/4 = 5 Robux.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 8: Ordering Fractions (requires common denominator) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. Arrange these fractions in order from least to greatest: 1/2, 3/10, 4/5. (Use commas, e.g., 1/10,1/5,1/2)</p>
+                            <input type="text" id="fractions-q8-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 3/10,1/2,4/5">
+                            <button onclick="toggleHint('fractions-hint8')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint8" class="hidden hint-box p-3 rounded mb-2">Find a common denominator for all three fractions. Think about what number 2, 10, and 5 can all divide into. The smallest is 10.</div>
+                            <button onclick="checkAnswer('fractions-q8', '3/10,1/2,4/5', 'First, find a common denominator, which is 10. Convert the fractions: 1/2 = 5/10, 3/10 (stays the same), 4/5 = 8/10. Now order them: 3/10, 5/10, 8/10. So the original order is 3/10, 1/2, 4/5.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 9: Multi-step Word Problem (Addition and Subtraction of Mixed Numbers) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. A Robloxian baker made 5 whole apple pies. He gave 2/3 of one pie to a friend. How many apple pies does he have left?</p>
+                            <input type="text" id="fractions-q9-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 4 1/3">
+                            <button onclick="toggleHint('fractions-hint9')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint9" class="hidden hint-box p-3 rounded mb-2">You start with 5. You need to subtract 2/3. To do this, borrow 1 from the 5 and convert it to a fraction with a denominator of 3 (like 3/3). So, 5 becomes 4 and 3/3. Then subtract.</div>
+                            <button onclick="checkAnswer('fractions-q9', '4 1/3', 'To subtract 2/3 from 5, convert 5 into a mixed number: 5 = 4 and 3/3. Then subtract: 4 3/3 - 2/3 = 4 1/3 apple pies left.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 10: Multi-step Word Problem (Adding three fractions) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. At the Smoothie Bar, you used 3/10 liter of orange juice, 7/10 liter of strawberry juice, and 4/5 liter of banana juice. How much total juice did you use?</p>
+                            <input type="text" id="fractions-q10-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 1 8/10">
+                            <button onclick="toggleHint('fractions-hint10')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint10" class="hidden hint-box p-3 rounded mb-2">Find a common denominator for 10 and 5. Then add all three fractions. Remember to simplify if needed.</div>
+                            <button onclick="checkAnswer('fractions-q10', '1 8/10', 'The common denominator is 10. Convert 4/5 to 8/10. Then add: 3/10 + 7/10 + 8/10 = 18/10. Convert to a mixed number: 18/10 = 1 and 8/10. (This can also be simplified to 1 4/5).')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 11: Multi-step Word Problem (Fractions of a set) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. There are 42 Roblox players in a game server. 3/7 of them are wearing the "Noob" outfit. How many players are wearing the "Noob" outfit?</p>
+                            <input type="number" id="fractions-q11-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('fractions-hint11')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint11" class="hidden hint-box p-3 rounded mb-2">To find a fraction of a whole number, divide the whole number by the denominator, then multiply by the numerator. Or simply multiply 3/7 by 42.</div>
+                            <button onclick="checkAnswer('fractions-q11', 18, 'To find 3/7 of 42, calculate (3 &divide; 7) &times; 42 or (3 &times; 42) &divide; 7. <br>42 &divide; 7 = 6. Then 6 &times; 3 = 18. So, 18 players are wearing the "Noob" outfit.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+
+                        <!-- Question 12: Multi-step Word Problem (Fraction of total, then subtraction) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. A Robloxian had 60 gold coins. He spent 2/5 of his money on a new item. How many gold coins does he have left?</p>
+                            <input type="number" id="fractions-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('fractions-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="fractions-hint12" class="hidden hint-box p-3 rounded mb-2">First, figure out how much money he *spent* (2/5 of 60). Then, subtract that amount from his original 60 gold coins to find out how much is *left*.</div>
+                            <button onclick="checkAnswer('fractions-q12', 36, 'Step 1: Calculate how much money he spent: (2/5) &times; 60 = (2 &times; 60) &divide; 5 = 120 &divide; 5 = 24 gold coins. <br>Step 2: Subtract the amount spent from the original amount: 60 - 24 = 36 gold coins left.')" class="action-button px-4 py-2 rounded w-full">Check Slice!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 6: Decimals -->
+            <section id="topic-decimals" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-blue-300 text-shadow-lg">Fortnite Math Zone!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2 text-purple-300">Topic 6: Decimals - The V-Bucks Specialist's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">V-Bucks Specialist's Handbook - Decoding Decimals</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">What are Decimals? (Precise Loot Counts!)</h3>
+                            <p>Decimals are special numbers that use a <strong>decimal point</strong> to show parts of a whole, just like fractions! They help us be super precise with quantities, like 1.5 Shield Potions or 0.75 of a map square.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Tenths and Hundredths (Small Parts of Your Inventory!)</h3>
+                            <ul class="list-disc list-inside space-y-2 mt-2 question-block p-4 rounded-lg">
+                                <li><strong>Tenths:</strong> Divide a whole into 10 equal parts. <span class="font-bold">0.1</span> means one tenth. Think of it like spending 1 V-Buck from a 10 V-Buck pack (if that existed!).</li>
+                                <li><strong>Hundredths:</strong> Divide a whole into 100 equal parts. <span class="font-bold">0.01</span> means one hundredth. This is like 1 cent in a dollar!</li>
+                                <li><strong>Place Value:</strong>
+                                    <table class="w-full border-collapse my-2">
+                                        <thead>
+                                            <tr><th class="border p-2">Tens</th><th class="border p-2">Ones</th><th class="border p-2">.</th><th class="border p-2">Tenths</th><th class="border p-2">Hundredths</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr><td class="border p-2">3</td><td class="border p-2">4</td><td class="border p-2">.</td><td class="border p-2">6</td><td class="border p-2">8</td></tr>
+                                        </tbody>
+                                    </table>
+                                    <p>In 34.68:</p>
+                                    <ul class="list-disc list-inside ml-4">
+                                        <li>The 3 is in the Tens place (value 30).</li>
+                                        <li>The 4 is in the Ones place (value 4).</li>
+                                        <li>The 6 is in the Tenths place (value 0.6).</li>
+                                        <li>The 8 is in the Hundredths place (value 0.08).</li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Converting Decimals & Fractions (Loot Box Magic!)</h3>
+                            <p>Decimals and fractions are just different ways to write the same part of a whole!</p>
+                            <div class="question-block p-4 mt-2 rounded">
+                                <p><strong>Decimal to Fraction:</strong> <span class="font-bold">0.5</span> = 5 tenths = <span class="font-bold">5/10</span>. Simplify it to <span class="font-bold">1/2</span>!</p>
+                                <p><strong>Fraction to Decimal:</strong> To convert <span class="font-bold">3/4</span>, think of it as 3 divided by 4, which is <span class="font-bold">0.75</span>. Or, find an equivalent fraction with a denominator of 10 or 100 (like 3/4 = 75/100).</p>
+                            </div>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Comparing & Ordering Decimals (Who Has More V-Bucks?)</h3>
+                            <p>To compare decimals, line up the decimal points and compare digits from left to right. If numbers are different lengths (like 0.5 and 0.50), add trailing zeros to the shorter one so they have the same number of decimal places.</p>
+                            <p class="main-panel p-3 mt-2 rounded">Example: To compare 1.25 and 1.2, think of 1.2 as 1.20. Now compare 1.25 and 1.20. 1.25 is greater!</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Rounding Decimals (Estimating Your Score!)</h3>
+                            <p>Sometimes you don't need super precise numbers. Rounding helps!</p>
+                            <div class="question-block p-4 mt-2 rounded">
+                                <p><strong>To the Nearest Whole Number:</strong> Look at the digit in the tenths place. If it's 5 or more (5, 6, 7, 8, 9), round up the ones digit. If it's less than 5 (0, 1, 2, 3, 4), keep the ones digit the same. (e.g., 7.8 rounds to 8; 7.3 rounds to 7).</p>
+                                <p><strong>To One Decimal Place:</strong> Look at the digit in the hundredths place. If it's 5 or more, round up the tenths digit. If it's less than 5, keep the tenths digit the same. (e.g., 5.67 rounds to 5.7; 5.63 rounds to 5.6).</p>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">V-Bucks Specialist Quiz!</h2>
+                    <div class="space-y-8">
+
+                        <!-- Question 1: Reading Decimals (Tenths) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. You have 0.7 of a full health bar. How do you read this decimal?</p>
+                            <input type="text" id="decimals-q1-input" class="input-themed w-full rounded mb-2" placeholder="e.g., zero point one">
+                            <button onclick="checkAnswer('decimals-q1', 'zero point seven', '0.7 is read as "zero point seven" or "seven tenths".')" class="action-button px-4 py-2 rounded w-full">Check Amount!</button>
+                        </div>
+
+                        <!-- Question 2: Reading Decimals (Hundredths) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. A rare weapon has a 0.05% drop chance. How do you read this decimal?</p>
+                            <input type="text" id="decimals-q2-input" class="input-themed w-full rounded mb-2" placeholder="e.g., zero point zero one">
+                            <button onclick="checkAnswer('decimals-q2', 'zero point zero five', '0.05 is read as "zero point zero five" or "five hundredths".')" class="action-button px-4 py-2 rounded w-full">Check Amount!</button>
+                        </div>
+
+                        <!-- Question 3: Place Value -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. In the number 123.45 V-Bucks, what is the value of the digit '4'?</p>
+                            <input type="text" id="decimals-q3-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 0.1, 40">
+                            <button onclick="checkAnswer('decimals-q3', '0.4', 'The digit 4 is in the tenths place, so its value is 0.4.')" class="action-button px-4 py-2 rounded w-full">Check Value!</button>
+                        </div>
+
+                        <!-- Question 4: Convert Decimal to Fraction (Tenths) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. You spent 0.6 of your pickaxe durability. Write 0.6 as a fraction in its simplest form.</p>
+                            <input type="text" id="decimals-q4-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 1/2">
+                            <button onclick="checkAnswer('decimals-q4', '3/5', '0.6 is 6 tenths, or 6/10. To simplify, divide both numerator and denominator by 2: 6 &divide; 2 = 3, and 10 &divide; 2 = 5. So, 3/5.')" class="action-button px-4 py-2 rounded w-full">Convert Loot!</button>
+                        </div>
+
+                        <!-- Question 5: Convert Fraction to Decimal (Common fractions) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. A map marker shows a location that is 3/4 of a kilometer away. Write 3/4 as a decimal.</p>
+                            <input type="number" step="0.01" id="decimals-q5-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 0.5">
+                            <button onclick="checkAnswer('decimals-q5', 0.75, 'To convert 3/4 to a decimal, divide 3 by 4, or recognize that 3/4 is equivalent to 75/100, which is 0.75.')" class="action-button px-4 py-2 rounded w-full">Convert Distance!</button>
+                        </div>
+
+                        <!-- Question 6: Comparing Decimals -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. Which is greater: 5.2 Shield Potions or 5.08 Shield Potions?</p>
+                            <input type="text" id="decimals-q6-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 5.2">
+                            <button onclick="toggleHint('decimals-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="decimals-hint6" class="hidden hint-box p-3 rounded mb-2">Add a zero to 5.2 so it has the same number of decimal places as 5.08. Then compare!</div>
+                            <button onclick="checkAnswer('decimals-q6', '5.2', 'To compare 5.2 and 5.08, think of 5.2 as 5.20. Now compare 5.20 and 5.08. Since 20 is greater than 08, 5.2 is greater.')" class="action-button px-4 py-2 rounded w-full">Compare Loot!</button>
+                        </div>
+
+                        <!-- Question 7: Ordering Decimals -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. Order these Fortnite scores from least to greatest: 10.5, 10.05, 10.55. (Use commas, e.g., 1.1,1.2,1.3)</p>
+                            <input type="text" id="decimals-q7-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 10.05,10.5,10.55">
+                            <button onclick="toggleHint('decimals-hint7')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="decimals-hint7" class="hidden hint-box p-3 rounded mb-2">Make sure all decimals have the same number of decimal places (hundredths) by adding zeros. Then compare from left to right.</div>
+                            <button onclick="checkAnswer('decimals-q7', '10.05,10.5,10.55', 'First, make them all hundredths: 10.50, 10.05, 10.55. Now order them: 10.05 (smallest), 10.50, 10.55 (greatest). So, 10.05, 10.5, 10.55.')" class="action-button px-4 py-2 rounded w-full">Order Scores!</button>
+                        </div>
+
+                        <!-- Question 8: Rounding to Nearest Whole Number -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. A supply drop landed 25.3 meters away. Round this distance to the nearest whole meter.</p>
+                            <input type="number" id="decimals-q8-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('decimals-q8', 25, 'To round to the nearest whole number, look at the tenths digit. Since 3 is less than 5, the ones digit stays the same. So, 25.3 rounds to 25.')" class="action-button px-4 py-2 rounded w-full">Round Distance!</button>
+                        </div>
+
+                        <!-- Question 9: Rounding to One Decimal Place -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. Your accuracy stat is 67.85%. Round this accuracy to one decimal place.</p>
+                            <input type="number" step="0.1" id="decimals-q9-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('decimals-q9', 67.9, 'To round to one decimal place, look at the hundredths digit. Since 5 is 5 or greater, round up the tenths digit. So, 67.85 rounds to 67.9.')" class="action-button px-4 py-2 rounded w-full">Round Accuracy!</button>
+                        </div>
+
+                        <!-- Question 10: Word Problem - Simple Decimal Addition -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. You collected 3.5 health from one bandage and 2.0 health from another. How much total health did you gain?</p>
+                            <input type="number" step="0.1" id="decimals-q10-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('decimals-q10', 5.5, 'To find the total, add the two health amounts: 3.5 + 2.0 = 5.5 health.')" class="action-button px-4 py-2 rounded w-full">Calculate Health!</button>
+                        </div>
+
+                        <!-- Question 11: Word Problem - Decimal Subtraction -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. You had 10.0 V-Bucks. You spent 3.75 V-Bucks on an emote. How many V-Bucks do you have left?</p>
+                            <input type="number" step="0.01" id="decimals-q11-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('decimals-hint11')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="decimals-hint11" class="hidden hint-box p-3 rounded mb-2">Line up the decimal points! Think of 10.0 as 10.00 to make subtraction easier with 3.75.</div>
+                            <button onclick="checkAnswer('decimals-q11', 6.25, 'To find the amount left, subtract the spent V-Bucks from the original amount: 10.00 - 3.75 = 6.25 V-Bucks.')" class="action-button px-4 py-2 rounded w-full">Calculate V-Bucks!</button>
+                        </div>
+
+                        <!-- Question 12: Multi-step Word Problem (Fraction to Decimal, then comparison or action) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. Your mission requires you to travel 1/4 of a kilometer. You've already walked 0.2 kilometers. How much further do you need to walk?</p>
+                            <input type="number" step="0.01" id="decimals-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('decimals-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="decimals-hint12" class="hidden hint-box p-3 rounded mb-2">First, convert the fraction (1/4 km) into a decimal. Then, subtract the distance you've already walked.</div>
+                            <button onclick="checkAnswer('decimals-q12', 0.05, 'Step 1: Convert 1/4 kilometer to a decimal: 1/4 = 0.25 kilometers. <br>Step 2: Subtract the distance already walked from the total distance: 0.25 - 0.20 = 0.05 kilometers further.')" class="action-button px-4 py-2 rounded w-full">Calculate Progress!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 7: 2D & 3D Shapes -->
+            <section id="topic-shapes" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-yellow-300 text-shadow-lg">Building Block Bonanza!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2 text-green-200">Topic 7: 2D & 3D Shapes - The Master Builder's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Steve & Alex's Blueprint Book</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">2D Shapes: Flat Worlds!</h3>
+                            <p>These are flat shapes you can draw on paper, like the faces of a block. They only have length and width.</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 question-block p-4 rounded-lg">
+                                <li><strong>Open Figures:</strong> Shapes that don't connect all the way around, like a path that stops before making a loop. (e.g., a letter 'C' or a half-drawn square).</li>
+                                <li><strong>Closed Figures:</strong> Shapes that fully connect, enclosing a space, like a completed room. (e.g., a square, circle, triangle).</li>
+                                <li><strong>Polygons:</strong> Special closed figures made only of straight line segments that don't cross!
+                                    <ul class="list-disc list-inside ml-4 mt-2">
+                                        <li>Triangle: 3 sides</li>
+                                        <li>Quadrilateral: 4 sides (like a square or rectangle block!)</li>
+                                        <li>Pentagon: 5 sides</li>
+                                        <li>Hexagon: 6 sides</li>
+                                        <li>Octagon: 8 sides</li>
+                                        <li>Nonagon: 9 sides</li>
+                                        <li>Decagon: 10 sides</li>
+                                    </ul>
+                                    <p class="mt-2"><strong>Symmetry:</strong> A shape has symmetry if you can fold it in half and both sides match perfectly, like mirroring a building. The fold line is called the <strong>line of symmetry</strong>.</p>
+                                </li>
+                            </ul>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">3D Shapes: Building Blocks in the World!</h3>
+                            <p>These shapes have length, width, and height. They take up space, like actual Minecraft blocks!</p>
+                            <ul class="list-disc list-inside space-y-2 mt-2 question-block p-4 rounded-lg">
+                                <li><strong>Faces:</strong> The flat surfaces of the shape (like the sides of a dice).</li>
+                                <li><strong>Edges:</strong> Where two faces meet (like the lines where blocks connect).</li>
+                                <li><strong>Vertices (or Corners):</strong> The points where edges meet (like the sharp corners of a block).</li>
+                                <li><strong>Prisms:</strong> Have two identical, parallel bases (top and bottom) and rectangular (or parallelogram) faces connecting them.
+                                    <ul class="list-disc list-inside ml-4 mt-2">
+                                        <li>Rectangular Prism (like a dirt block)</li>
+                                        <li>Triangular Prism (like a wedge-shaped roof piece)</li>
+                                        <li>Pentagonal Prism, Hexagonal Prism, etc.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Pyramids:</strong> Have one base and triangular faces that meet at a single point (apex).
+                                    <ul class="list-disc list-inside ml-4 mt-2">
+                                        <li>Square Pyramid (like a tiny mountain peak)</li>
+                                        <li>Triangular Pyramid (a tetrahedron!)</li>
+                                        <li>Pentagonal Pyramid, Hexagonal Pyramid, etc.</li>
+                                    </ul>
+                                </li>
+                                <li><strong>Cross Sections:</strong> What you see when you "slice" a 3D shape. If you slice a cube horizontally, the cross-section is a square!</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Master Builder's Challenge!</h2>
+                    <div class="space-y-8">
+
+                        <!-- Question 1: Open or Closed Figure -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. Imagine a partially built fence in Minecraft that has a gap in it. Is this an open or closed figure?</p>
+                            <input type="text" id="shapes-q1-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Open">
+                            <button onclick="checkAnswer('shapes-q1', 'Open', 'An open figure has a break or gap and does not fully enclose a space, like a fence with a gap.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 2: Polygon Name -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. A perfectly crafted gem in Roblox has 5 straight sides. What is the name of this 2D shape?</p>
+                            <input type="text" id="shapes-q2-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Triangle">
+                            <button onclick="checkAnswer('shapes-q2', 'Pentagon', 'A polygon with 5 straight sides is called a pentagon.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 3: 3D Shape Characteristics (Cube) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. How many faces does a standard Minecraft dirt block (a cube) have?</p>
+                            <input type="number" id="shapes-q3-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('shapes-q3', 6, 'A cube, like a dirt block, has 6 flat surfaces or faces.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 4: Identifying a Prism -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. Is a long, rectangular Roblox building (like a simple rectangular room) an example of a prism or a pyramid?</p>
+                            <input type="text" id="shapes-q4-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Prism">
+                            <button onclick="checkAnswer('shapes-q4', 'Prism', 'A prism has two identical and parallel bases connected by rectangular faces. A rectangular building fits this description (rectangular prism).')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 5: Identifying a Pyramid -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. Steve builds a small, pointy mountain with a square base and four triangular sides meeting at the top. Is this a prism or a pyramid?</p>
+                            <input type="text" id="shapes-q5-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Pyramid">
+                            <button onclick="checkAnswer('shapes-q5', 'Pyramid', 'A pyramid has one base and triangular faces that meet at a single point (an apex). This describes a square pyramid.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 6: Lines of Symmetry -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. How many lines of symmetry does a perfect square block have?</p>
+                            <input type="number" id="shapes-q6-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('shapes-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="shapes-hint6" class="hidden hint-box p-3 rounded mb-2">Think about all the ways you can fold a square so that both halves match perfectly. You can fold it horizontally, vertically, and diagonally.</div>
+                            <button onclick="checkAnswer('shapes-q6', 4, 'A square has 4 lines of symmetry: one horizontal, one vertical, and two diagonal lines.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 7: Cross Section -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. If you "slice" a cylindrical tree trunk in Minecraft straight across (horizontally), what 2D shape would the cross-section be?</p>
+                            <input type="text" id="shapes-q7-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Square">
+                            <button onclick="checkAnswer('shapes-q7', 'Circle', 'Slicing a cylinder (like a tree trunk) horizontally will always result in a circular cross-section.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 8: Number of Vertices (Triangular Prism) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. A triangular prism (like a wedge-shaped roof piece) has 5 faces and 9 edges. How many vertices (corners) does it have?</p>
+                            <input type="number" id="shapes-q8-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('shapes-q8', 6, 'A triangular prism has 6 vertices. (3 on each triangular base).')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 9: Name 3D shape from description -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. What 3D shape has a hexagonal (6-sided) base and triangular faces that all meet at a single point?</p>
+                            <input type="text" id="shapes-q9-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Square Pyramid">
+                            <button onclick="checkAnswer('shapes-q9', 'Hexagonal Pyramid', 'A shape with a hexagonal base and triangular faces meeting at a point is a hexagonal pyramid.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 10: Polygon identification based on count -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. If you count the sides of a Roblox character's head, you'll find 6 sides (if it's a basic block head!). What is the 2D shape of each face of this head?</p>
+                            <input type="text" id="shapes-q10-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Square">
+                            <button onclick="checkAnswer('shapes-q10', 'Square', 'A basic Roblox character\'s head is a cube, and each face of a cube is a square.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 11: Word Problem - Open/Closed in context -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. You are building a circular pond. If you draw the outline of the pond but leave a small opening for a waterfall, is the pond's outline an open or closed figure?</p>
+                            <input type="text" id="shapes-q11-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Closed">
+                            <button onclick="toggleHint('shapes-hint11')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="shapes-hint11" class="hidden hint-box p-3 rounded mb-2">If there's an opening, does it completely enclose an area?</div>
+                            <button onclick="checkAnswer('shapes-q11', 'Open', 'Since there is a small opening for the waterfall, the outline does not fully enclose a space, making it an open figure.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+
+                        <!-- Question 12: Word Problem - Sorting 3D shapes -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. You have a collection of Minecraft blocks: a dirt block (rectangular prism), a crafting table (cube - rectangular prism), and a beacon (pyramid). If you sort them into two groups: "Prisms" and "Pyramids", how many blocks would be in the "Prisms" group?</p>
+                            <input type="number" id="shapes-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('shapes-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="shapes-hint12" class="hidden hint-box p-3 rounded mb-2">Remember that a cube is a special type of rectangular prism. Identify which shapes fit the definition of a prism.</div>
+                            <button onclick="checkAnswer('shapes-q12', 2, 'A dirt block (rectangular prism) and a crafting table (cube, which is also a rectangular prism) are both prisms. A beacon is a pyramid. So, there would be 2 blocks in the "Prisms" group.')" class="action-button px-4 py-2 rounded w-full">Check Blueprint!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 8: Area -->
+            <section id="topic-area" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-yellow-300 text-shadow-lg">Minecraft Math Adventure!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2">Topic 8: Area - The Master Architect's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Master Architect's Handbook - Building with Area</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">What is Area? (Covering Your Ground!)</h3>
+                            <p>Area is the amount of surface inside a 2D shape. Imagine you're covering the floor of your Minecraft house with carpet blocks. The "area" is how many carpet blocks you need to cover the entire floor without any gaps or overlaps!</p>
+                            <p class="question-block p-3 mt-2 rounded">Example: If a small room needs 12 carpet blocks to cover its floor, its area is 12 carpet blocks, or 12 "square units".</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Units of Area (Measuring Your Blocks!)</h3>
+                            <p>Just like blocks have different sizes, area has different units:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-2 study-guide-inner-panel p-4 rounded-lg">
+                                <li><strong>Square Unit:</strong> A general term for 1 unit by 1 unit. Imagine a tiny square block: <span class="unit-square"></span>.</li>
+                                <li><strong>Square Centimeter (cm<sup>2</sup>):</strong> A square that is 1 cm long and 1 cm wide. We write it as cm<sup>2</sup>. Used for smaller areas, like a button.</li>
+                                <li><strong>Square Meter (m<sup>2</sup>):</strong> A much bigger square, 1 meter long and 1 meter wide. We write it as m<sup>2</sup>. Used for larger areas, like the floor of a big house or a farm plot.</li>
+                            </ul>
+                            <p class="mt-2">Remember to *always* label your answer with the correct square unit!</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Calculating Area (The Length x Width Recipe!)</h3>
+                            <p>For rectangles and squares, calculating area is like a simple crafting recipe:</p>
+                            <p class="font-bold text-yellow-300 text-center text-2xl mt-4">Area = Length &times; Width</p>
+                            <div class="question-block p-4 mt-2 rounded">
+                                <p><strong>For a square:</strong> If one side of your block is 5 units long, its area is 5 &times; 5 = 25 square units.</p>
+                                <p><strong>For a rectangle:</strong> If your farm plot is 8 blocks long and 4 blocks wide, its area is 8 &times; 4 = 32 square units.</p>
+                            </div>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Area of Irregular Shapes (Counting Crafting Grid Squares!)</h3>
+                            <p>Sometimes shapes aren't perfect rectangles. You might need to count the full squares and combine the half-squares:</p>
+                            <ul class="list-disc list-inside space-y-2 mt-2 study-guide-inner-panel p-4 rounded-lg">
+                                <li>Count all the full square units first.</li>
+                                <li>Then, count all the half-square units. Every two half-squares make one full square unit.</li>
+                                <li>Add them up for the total area!</li>
+                            </ul>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Architect's Area Challenges!</h2>
+                    <div class="space-y-8">
+
+                        <!-- Question 1: Basic Area of Rectangle -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. You're building a rectangular house. The floor is 7 blocks long and 5 blocks wide. What is the area of the floor in square blocks?</p>
+                            <input type="number" id="area-q1-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('area-q1', 35, 'To find the area of a rectangle, multiply its length by its width: 7 blocks &times; 5 blocks = 35 square blocks.')" class="action-button px-4 py-2 rounded w-full">Measure Space!</button>
+                        </div>
+
+                        <!-- Question 2: Basic Area of Square -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. A square farm plot has sides that are each 6 meters long. What is the area of the farm plot in square meters (m<sup>2</sup>)?</p>
+                            <input type="number" id="area-q2-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('area-q2', 36, 'To find the area of a square, multiply the side length by itself: 6 m &times; 6 m = 36 square meters (m<sup>2</sup>).')" class="action-button px-4 py-2 rounded w-full">Measure Space!</button>
+                        </div>
+
+                        <!-- Question 3: Area of Irregular Shape (Counting Squares - simple) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. Imagine a small pond shape made up of 8 full square blocks and 4 half-square blocks. What is the total area of the pond in square blocks?</p>
+                            <input type="number" id="area-q3-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('area-q3', 10, 'Each two half-square blocks make one full square block. So, 4 half-squares are 2 full squares. Add them to the 8 full squares: 8 + 2 = 10 square blocks.')" class="action-button px-4 py-2 rounded w-full">Count Surface!</button>
+                        </div>
+
+                        <!-- Question 4: Word Problem - Area of a path -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. You are building a straight path that is 2 meters wide and 15 meters long. What is the area of the path in m<sup>2</sup>?</p>
+                            <input type="number" id="area-q4-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('area-q4', 30, 'To find the area of the rectangular path, multiply its length by its width: 15 m &times; 2 m = 30 square meters (m<sup>2</sup>).')" class="action-button px-4 py-2 rounded w-full">Calculate Path!</button>
+                        </div>
+
+                        <!-- Question 5: Finding missing side given area -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. Your friend built a rectangular garden with an area of 48 square blocks. If the garden is 8 blocks long, how wide is it?</p>
+                            <input type="number" id="area-q5-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('area-hint5')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint5" class="hidden hint-box p-3 rounded mb-2">If Area = Length &times; Width, then Width = Area &divide; Length.</div>
+                            <button onclick="checkAnswer('area-q5', 6, 'To find the width, divide the area by the length: 48 square blocks &divide; 8 blocks = 6 blocks wide.')" class="action-button px-4 py-2 rounded w-full">Find Missing Side!</button>
+                        </div>
+
+                        <!-- Question 6: Comparing Areas -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. Which has a greater area: a square room with sides of 9 meters, or a rectangular room that is 10 meters long and 8 meters wide?</p>
+                            <input type="text" id="area-q6-input" class="input-themed w-full rounded mb-2" placeholder="e.g., Square room">
+                            <button onclick="toggleHint('area-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint6" class="hidden hint-box p-3 rounded mb-2">Calculate the area of each room separately, then compare the results.</div>
+                            <button onclick="checkAnswer('area-q6', 'Square room', 'Area of square room: 9 m &times; 9 m = 81 m<sup>2</sup>. <br>Area of rectangular room: 10 m &times; 8 m = 80 m<sup>2</sup>. <br>81 m<sup>2</sup> is greater than 80 m<sup>2</sup>, so the square room has a greater area.')" class="action-button px-4 py-2 rounded w-full">Compare Buildings!</button>
+                        </div>
+
+                        <!-- Question 7: Area of a smaller unit within a larger area -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. A wall section is 4 meters tall and 5 meters wide. If you paint 1 square meter of it with a special pixel brush, what fraction of the wall is painted (simplify your fraction)?</p>
+                            <input type="text" id="area-q7-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 1/20">
+                            <button onclick="toggleHint('area-hint7')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint7" class="hidden hint-box p-3 rounded mb-2">First, find the total area of the wall. Then, express the painted area as a fraction of the total area.</div>
+                            <button onclick="checkAnswer('area-q7', '1/20', 'Total area of the wall: 4 m &times; 5 m = 20 m<sup>2</sup>. <br>You painted 1 m<sup>2</sup>. So, the fraction painted is 1/20. This fraction is already in simplest form.')" class="action-button px-4 py-2 rounded w-full">Paint Job!</button>
+                        </div>
+
+                        <!-- Question 8: Multi-step word problem - area & cost -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. You need to cover a rectangular floor that is 9 blocks long and 7 blocks wide with special glowing obsidian. Each glowing obsidian block costs 5 gold ingots. How many gold ingots will you spend in total?</p>
+                            <input type="number" id="area-q8-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('area-hint8')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint8" class="hidden hint-box p-3 rounded mb-2">First, calculate the area (number of obsidian blocks needed). Then, multiply that by the cost of each block.</div>
+                            <button onclick="checkAnswer('area-q8', 315, 'Step 1: Calculate the area of the floor: 9 blocks &times; 7 blocks = 63 square blocks (obsidian needed). <br>Step 2: Calculate the total cost: 63 blocks &times; 5 gold ingots/block = 315 gold ingots.')" class="action-button px-4 py-2 rounded w-full">Calculate Cost!</button>
+                        </div>
+
+                        <!-- Question 9: Area of a composed shape (implied L-shape or missing rectangle) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. Your building has an L-shaped floor. It can be split into two rectangles. One rectangle is 5 blocks by 3 blocks. The other rectangle is 4 blocks by 2 blocks (and doesn't overlap the first). What is the total area of the L-shaped floor?</p>
+                            <input type="number" id="area-q9-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('area-hint9')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint9" class="hidden hint-box p-3 rounded mb-2">Calculate the area of each smaller rectangle. Then, add those areas together to find the total area of the L-shape.</div>
+                            <button onclick="checkAnswer('area-q9', 23, 'Step 1: Area of the first rectangle: 5 blocks &times; 3 blocks = 15 square blocks. <br>Step 2: Area of the second rectangle: 4 blocks &times; 2 blocks = 8 square blocks. <br>Step 3: Total area = 15 + 8 = 23 square blocks.')" class="action-button px-4 py-2 rounded w-full">Calculate Complex Area!</button>
+                        </div>
+
+                        <!-- Question 10: Area unit conversion (conceptually, not calculation) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. Would you use square centimeters (cm<sup>2</sup>) or square meters (m<sup>2</sup>) to measure the area of a small button from your inventory?</p>
+                            <input type="text" id="area-q10-input" class="input-themed w-full rounded mb-2" placeholder="e.g., cm^2">
+                            <button onclick="checkAnswer('area-q10', 'cm^2', 'Square centimeters (cm<sup>2</sup>) are used for measuring smaller areas, like a button, while square meters (m<sup>2</sup>) are for larger areas.')" class="action-button px-4 py-2 rounded w-full">Choose Unit!</button>
+                        </div>
+
+                        <!-- Question 11: Multi-step - Find total squares for irregular shape -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. A pixel art design has 18 full squares and 6 half-squares. What is the total area of the design in square units?</p>
+                            <input type="number" id="area-q11-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('area-hint11')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint11" class="hidden hint-box p-3 rounded mb-2">Remember, 2 half-squares make 1 full square. Convert the half-squares to full squares before adding them to the existing full squares.</div>
+                            <button onclick="checkAnswer('area-q11', 21, '6 half-squares is equal to 6 &divide; 2 = 3 full squares. Add these to the 18 full squares: 18 + 3 = 21 square units.')" class="action-button px-4 py-2 rounded w-full">Calculate Design Area!</button>
+                        </div>
+
+                        <!-- Question 12: Word Problem - Area for multiple identical items -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. You are crafting 3 banners, and each banner is a rectangle 4 blocks high and 2 blocks wide. What is the total area of all 3 banners combined?</p>
+                            <input type="number" id="area-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('area-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="area-hint12" class="hidden hint-box p-3 rounded mb-2">First, find the area of one banner. Then, multiply that area by the number of banners.</div>
+                            <button onclick="checkAnswer('area-q12', 24, 'Step 1: Area of one banner: 4 blocks &times; 2 blocks = 8 square blocks. <br>Step 2: Total area for 3 banners: 8 square blocks/banner &times; 3 banners = 24 square blocks.')" class="action-button px-4 py-2 rounded w-full">Calculate Banner Area!</button>
+                        </div>
+
+                    </div>
+                </section>
+            </section>
+
+            <!-- TOPIC 9: Time -->
+            <section id="topic-time" class="tab-content">
+                <header class="text-center mb-10">
+                    <h1 class="header-title text-3xl md:text-5xl text-blue-300 text-shadow-lg">Fortnite Math Zone!</h1>
+                    <p class="header-title text-xl md:text-2xl mt-2 text-purple-300">Topic 9: Time - The Time Traveler's Guide</p>
+                </header>
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Battle Royale Time Tactics - Understanding the Clock</h2>
+                    <div class="space-y-6 text-lg">
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Reading Analog Clocks (The Storm Clock!)</h3>
+                            <p>Analog clocks have hands that tell time:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 question-block p-4 rounded-lg">
+                                <li><strong>Short hand:</strong> Hour hand (points to the hour).</li>
+                                <li><strong>Long hand:</strong> Minute hand (points to the minutes; each number is 5 minutes).</li>
+                                <li><strong>Thin hand (sometimes):</strong> Second hand (tells seconds; moves fastest).</li>
+                            </ul>
+                            <p class="mt-2">Example: If the hour hand is past 6 and the minute hand is on 3, it's 6:15!</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Units of Time (Knowing Your Durations!)</h3>
+                            <p>Time comes in different units:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 question-block p-4 rounded-lg">
+                                <li>1 minute (min) = 60 seconds (s)</li>
+                                <li>1 hour (h) = 60 minutes (min)</li>
+                                <li>1 day = 24 hours (h)</li>
+                                <li>1 week = 7 days</li>
+                                <li>1 month = about 4 weeks (or 28-31 days)</li>
+                                <li>1 year = 12 months = 52 weeks = 365 days (366 in a leap year!)</li>
+                            </ul>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Converting Units (Gear Up for Longer Times!)</h3>
+                            <p>To convert between units, you often multiply or divide:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 main-panel p-4 rounded-lg">
+                                <li>Minutes to seconds: Multiply by 60 (e.g., 2 min = 2 &times; 60 = 120 s)</li>
+                                <li>Seconds to minutes: Divide by 60 (e.g., 180 s = 180 &divide; 60 = 3 min)</li>
+                                <li>Years to months: Multiply by 12 (e.g., 3 years = 3 &times; 12 = 36 months)</li>
+                            </ul>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">24-Hour Clock (Military Time / Storm Circle Time!)</h3>
+                            <p>The 24-hour clock (or military time) helps avoid confusion between AM and PM. After 12:00 PM (noon), you keep counting up:</p>
+                            <ul class="list-disc list-inside space-y-1 mt-2 question-block p-4 rounded-lg">
+                                <li>1 PM = 13:00</li>
+                                <li>6 PM = 18:00</li>
+                                <li>Midnight (12 AM) = 00:00 (or 24:00)</li>
+                            </ul>
+                            <p class="mt-2">To convert PM to 24-hour time, just add 12 to the hour (e.g., 3 PM + 12 = 15:00).</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Calculating Duration (How Long Until the Next Zone?)</h3>
+                            <p>Duration is how much time passes from a start time to an end time. You can count hours and minutes, or subtract.</p>
+                            <p class="main-panel p-3 mt-2 rounded">Example: From 10:00 to 12:30 is 2 hours and 30 minutes.</p>
+                        </article>
+                        <article>
+                            <h3 class="font-bold text-xl mb-2">Reading Timetables (Bus to the Next Loot Spot!)</h3>
+                            <p>Timetables organize events or travel times. Look at the rows and columns to find specific information, like bus arrival times or event start times.</p>
+                        </article>
+                    </div>
+                </section>
+
+                <section class="main-panel p-6 rounded-lg">
+                    <h2 class="section-title text-2xl mb-4 text-white">Time Traveler's Challenges!</h2>
+                    <div class="space-y-8">
+
+                        <!-- Question 1: Unit Conversion (min to sec) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">1. The storm circle will shrink in 3 minutes. How many seconds is that?</p>
+                            <input type="number" id="time-q1-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('time-q1', 180, 'There are 60 seconds in 1 minute. So, 3 minutes &times; 60 seconds/minute = 180 seconds.')" class="action-button px-4 py-2 rounded w-full">Check Time!</button>
+                        </div>
+
+                        <!-- Question 2: Unit Conversion (sec to min, sec) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">2. You applied a medkit for 155 seconds. How long is that in minutes and seconds? (e.g., 2 min 35 s)</p>
+                            <input type="text" id="time-q2-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 2 min 35 s">
+                            <button onclick="checkAnswer('time-q2', '2 min 35 s', 'Divide 155 by 60: 155 &divide; 60 = 2 with a remainder of 35. So, 2 minutes and 35 seconds.')" class="action-button px-4 py-2 rounded w-full">Check Time!</button>
+                        </div>
+
+                        <!-- Question 3: 24-hour clock -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">3. The next live event starts at 8:40 PM. What is this time in 24-hour clock format?</p>
+                            <input type="text" id="time-q3-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 18:00">
+                            <button onclick="checkAnswer('time-q3', '20:40', 'For PM times, add 12 to the hour: 8 + 12 = 20. So, 20:40.')" class="action-button px-4 py-2 rounded w-full">Check Time!</button>
+                        </div>
+
+                        <!-- Question 4: Duration (simple, within same hour) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">4. Your teammate started looting at 10:15 and finished at 10:50. How long did they spend looting?</p>
+                            <input type="text" id="time-q4-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 25 minutes">
+                            <button onclick="checkAnswer('time-q4', '35 minutes', 'Subtract the start time from the end time: 10:50 - 10:15 = 35 minutes.')" class="action-button px-4 py-2 rounded w-full">Calculate Duration!</button>
+                        </div>
+
+                        <!-- Question 5: Duration (across hours) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">5. A Fortnite match started at 17:15 and ended at 17:55. How long did the match last?</p>
+                            <input type="text" id="time-q5-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 40 minutes">
+                            <button onclick="checkAnswer('time-q5', '40 minutes', 'Subtract the start time from the end time: 17:55 - 17:15 = 40 minutes.')" class="action-button px-4 py-2 rounded w-full">Calculate Duration!</button>
+                        </div>
+
+                        <!-- Question 6: Timetable Reading (direct) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">6. Look at the simplified bus timetable for the Battle Bus:</p>
+                            <table class="data-table mb-4">
+                                <thead>
+                                    <tr><th>Stop</th><th>Departure Time</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>Tilted Towers</td><td>08:10</td></tr>
+                                    <tr><td>Retail Row</td><td>08:25</td></tr>
+                                    <tr><td>Pleasant Park</td><td>08:45</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-lg mb-2 question-text">What time does the Battle Bus depart from Retail Row?</p>
+                            <input type="text" id="time-q6-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 08:00">
+                            <button onclick="checkAnswer('time-q6', '08:25', 'Find \'Retail Row\' in the Stop column, then look across to the \'Departure Time\' column.')" class="action-button px-4 py-2 rounded w-full">Read Timetable!</button>
+                        </div>
+
+                        <!-- Question 7: Word Problem - End Time -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">7. You started a challenge at 07:05. It takes 4 hours 10 minutes to complete. What time will you finish?</p>
+                            <input type="text" id="time-q7-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 11:15">
+                            <button onclick="toggleHint('time-hint7')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="time-hint7" class="hidden hint-box p-3 rounded mb-2">Add the duration (4 hours 10 minutes) to the start time (07:05).</div>
+                            <button onclick="checkAnswer('time-q7', '11:15', 'Add the hours first: 07:05 + 4 hours = 11:05. Then add the minutes: 11:05 + 10 minutes = 11:15. So, you will finish at 11:15.')" class="action-button px-4 py-2 rounded w-full">Calculate Finish Time!</button>
+                        </div>
+
+                        <!-- Question 8: Word Problem - Start Time -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">8. Your friend finished a long Fortnite stream at 00:40 (the next day). If the stream lasted 1 hour 25 minutes, what time did they start streaming?</p>
+                            <input type="text" id="time-q8-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 23:15">
+                            <button onclick="toggleHint('time-hint8')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="time-hint8" class="hidden hint-box p-3 rounded mb-2">Subtract the duration (1 hour 25 minutes) from the end time (00:40). Remember to borrow from hours if needed when subtracting minutes.</div>
+                            <button onclick="checkAnswer('time-q8', '23:15', 'Subtract 1 hour from 00:40 to get 23:40 (previous day). Then subtract 25 minutes from 23:40. 40 - 25 = 15. So, the start time was 23:15.')" class="action-button px-4 py-2 rounded w-full">Calculate Start Time!</button>
+                        </div>
+
+                        <!-- Question 9: Multi-step Word Problem - Duration across midnight -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">9. A special Fortnite concert started at 23:10 and ended at 02:50 the next day. How long did the concert last?</p>
+                            <input type="text" id="time-q9-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 3 hours 40 minutes">
+                            <button onclick="toggleHint('time-hint9')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="time-hint9" class="hidden hint-box p-3 rounded mb-2">Calculate the time from 23:10 to midnight (00:00), then add the time from midnight to 02:50.</div>
+                            <button onclick="checkAnswer('time-q9', '3 hours 40 minutes', 'From 23:10 to 00:00 (midnight) is 50 minutes. From 00:00 to 02:50 is 2 hours 50 minutes. Total duration: 50 minutes + 2 hours 50 minutes = 2 hours 100 minutes = 3 hours 40 minutes.')" class="action-button px-4 py-2 rounded w-full">Calculate Concert Length!</button>
+                        </div>
+
+                        <!-- Question 10: Timetable Reading (indirect - find latest train to arrive by X) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">10. You need to reach the "Loot Lake" drop zone by 11:00 AM. The Battle Bus journey from "Lazy Links" to "Loot Lake" takes 28 minutes. Here are the departure times from Lazy Links:</p>
+                            <table class="data-table mb-4">
+                                <thead>
+                                    <tr><th>Departure from Lazy Links</th><th>Arrival at Loot Lake (28 min later)</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>09:45 AM</td><td>10:13 AM</td></tr>
+                                    <tr><td>10:15 AM</td><td>10:43 AM</td></tr>
+                                    <tr><td>10:45 AM</td><td>11:13 AM</td></tr>
+                                    <tr><td>11:15 AM</td><td>11:43 AM</td></tr>
+                                </tbody>
+                            </table>
+                            <p class="text-lg mb-2 question-text">What is the latest bus you can take from Lazy Links to arrive at Loot Lake BEFORE 11:00 AM?</p>
+                            <input type="text" id="time-q10-input" class="input-themed w-full rounded mb-2" placeholder="e.g., 10:15 AM">
+                            <button onclick="toggleHint('time-hint10')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="time-hint10" class="hidden hint-box p-3 rounded mb-2">Look at the 'Arrival at Loot Lake' column. Which arrival time is the closest to, but still BEFORE, 11:00 AM? Then find its corresponding departure time.</div>
+                            <button onclick="checkAnswer('time-q10', '10:15 AM', 'The arrivals are: 10:13 AM, 10:43 AM, 11:13 AM, 11:43 AM. To arrive BEFORE 11:00 AM, the latest possible arrival is 10:43 AM. This corresponds to a departure from Lazy Links at 10:15 AM.')" class="action-button px-4 py-2 rounded w-full">Find Best Bus!</button>
+                        </div>
+
+                        <!-- Question 11: Unit Conversion (years to months) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">11. A new Fortnite season lasts for 3 years. How many months is that?</p>
+                            <input type="number" id="time-q11-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="checkAnswer('time-q11', 36, 'There are 12 months in 1 year. So, 3 years &times; 12 months/year = 36 months.')" class="action-button px-4 py-2 rounded w-full">Convert Season!</button>
+                        </div>
+
+                        <!-- Question 12: Unit Conversion (weeks to days) -->
+                        <div class="question-block p-4 rounded-lg">
+                            <p class="text-lg mb-2 question-text">12. You planned a week-long Fortnite tournament. If the tournament lasts 5 weeks and 3 days, how many total days is that?</p>
+                            <input type="number" id="time-q12-input" class="input-themed w-full rounded mb-2">
+                            <button onclick="toggleHint('time-hint12')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
+                            <div id="time-hint12" class="hidden hint-box p-3 rounded mb-2">First, convert the weeks into days. Then, add the extra days. (Remember: 1 week = 7 days).</div>
+                            <button onclick="checkAnswer('time-q12', 38, 'First, convert 5 weeks to days: 5 weeks &times; 7 days/week = 35 days. <br>Then, add the extra 3 days: 35 days + 3 days = 38 total days.')" class="action-button px-4 py-2 rounded w-full">Calculate Tournament!</button>
+                        </div>
+                    </div>
+                </section>
+            </section>
+        </main>
+
+        <!-- Modal for Feedback -->
+        <div id="feedback-modal" class="modal-backdrop hidden">
+            <div id="modal-content" class="modal-content-themed">
+                <p id="feedback-text" class="text-xl mb-4 feedback-text-modal"></p>
+                <div id="feedback-explanation" class="text-left bg-gray-700 p-4 rounded mb-4"></div>
+                <button onclick="closeModal()" class="action-button px-6 py-2 rounded">Keep Going!</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const topics = {
+            multiplication: { title: 'Multiplication & Division', theme: 'minecraft' },
+            data: { title: 'Handling Data', theme: 'minecraft' },
+            angles: { title: 'Angles', theme: 'roblox' },
+            position: { title: 'Position & Movement', theme: 'fortnite' },
+            fractions: { title: 'Fractions', theme: 'roblox-pizza' },
+            decimals: { title: 'Decimals', theme: 'fortnite' },
+            shapes: { title: '2D & 3D Shapes', theme: 'minecraft-shapes' },
+            area: { title: 'Area', theme: 'minecraft' },
+            time: { title: 'Time', theme: 'fortnite' }
+        };
+
+        const currentTopicTitleElement = document.getElementById('current-topic-title');
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        const body = document.body;
+        const modal = document.getElementById('feedback-modal');
+        const modalContent = document.getElementById('modal-content');
+        const feedbackText = document.getElementById('feedback-text');
+        const feedbackExplanation = document.getElementById('feedback-explanation');
+        const mapRows = ['A', 'B', 'C', 'D']; // For Position & Movement map
+
+        // Function to update map for Position & Movement topic
+        function generateMap(mapId) {
+            const mapGrid = document.getElementById(mapId);
+            if (!mapGrid) return; // Exit if map element doesn't exist for the current topic
+
+            mapGrid.innerHTML = ''; // Clear existing cells
+            for (let r = 0; r < 4; r++) {
+                for (let c = 0; c < 4; c++) {
+                    const cell = document.createElement('div');
+                    cell.classList.add('map-cell');
+                    cell.id = `${mapId}-cell-${r}-${c}`; // Unique ID for each cell
+                    cell.textContent = `${mapRows[r]}${c + 1}`;
+                    mapGrid.appendChild(cell);
+                }
+            }
+        }
+
+        function clearMapHighlights(mapId) {
+            const mapGrid = document.getElementById(mapId);
+            if (!mapGrid) return;
+            mapGrid.querySelectorAll('.map-cell').forEach(cell => {
+                cell.classList.remove('player', 'target', 'path');
+            });
+        }
+
+        // Highlights player, target, and optionally a path for Position & Movement topic
+        function setMapHighlight(mapId, playerRow, playerCol, targetRow, targetCol, path = []) {
+            clearMapHighlights(mapId); // Clear previous highlights
+
+            const playerCell = document.getElementById(`${mapId}-cell-${playerRow}-${playerCol}`);
+            if (playerCell) {
+                playerCell.classList.add('player');
+            }
+
+            const targetCell = document.getElementById(`${mapId}-cell-${targetRow}-${targetCol}`);
+            if (targetCell) {
+                targetCell.classList.add('target');
+            }
+
+            // Highlight path cells if provided
+            path.forEach((coords) => {
+                const [r, c] = coords;
+                const pathCell = document.getElementById(`${mapId}-cell-${r}-${c}`);
+                if (pathCell) {
+                    pathCell.classList.add('path');
+                }
+            });
+        }
+
+
+        // Function to load a specific topic
+        function loadTopic(topicId) {
+            // Update active button
+            tabButtons.forEach(button => {
+                if (button.dataset.topic === topicId) {
+                    button.classList.add('active');
+                } else {
+                    button.classList.remove('active');
+                }
+            });
+
+            // Hide all topics and show the selected one
+            tabContents.forEach(content => {
+                if (content.id === `topic-${topicId}`) {
+                    content.classList.add('active');
+                    content.style.display = 'block'; // Ensure it's visible
+                } else {
+                    content.classList.remove('active');
+                    content.style.display = 'none'; // Hide others
+                }
+            });
+
+            // Update main header title
+            currentTopicTitleElement.textContent = `Topic ${topics[topicId].title}`;
+
+            // Apply theme to body
+            body.className = ''; // Clear existing themes
+            body.setAttribute('data-theme', topics[topicId].theme);
+
+            // Re-generate map for Position & Movement if active
+            if (topicId === 'position') {
+                generateMap('position-fortnite-map');
+            }
+            // Clear map highlights if switching away from position
+            document.querySelectorAll('.map-grid').forEach(mapGrid => {
+                if (mapGrid.id !== 'position-fortnite-map' || topicId !== 'position') {
+                    clearMapHighlights(mapGrid.id);
+                }
+            });
+        }
+
+        // Add event listeners to navigation buttons
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                loadTopic(button.dataset.topic);
+            });
+        });
+
+        // Quiz checking logic (adapted for unique IDs)
+        function checkAnswer(questionId, correctAnswer, explanation) {
+            const userInput = document.getElementById(questionId + '-input').value.trim();
+            let isCorrect = false;
+
+            // Normalize user input and correct answer for comparison based on type
+            if (typeof correctAnswer === 'string') {
+                // Special handling for fractions like "1 1/3" or "3/10,1/2,4/5"
+                if (correctAnswer.includes('/') || correctAnswer.includes(',')) {
+                    // Normalize space, case, and extra commas for list of fractions
+                    const normalizeFractionList = (str) => str.toLowerCase().replace(/\s/g, '').split(',').sort().join(',');
+                    isCorrect = normalizeFractionList(userInput) === normalizeFractionList(correctAnswer);
+
+                    // Also check for mixed number input for single fractions if direct fraction comparison failed
+                    if (!isCorrect && (userInput.includes(' ') && userInput.includes('/'))) {
+                        const parseMixedNumber = (str) => {
+                            const parts = str.split(' ');
+                            if (parts.length === 2 && parts[1].includes('/')) {
+                                const whole = parseFloat(parts[0]);
+                                const fractionParts = parts[1].split('/').map(Number);
+                                if (fractionParts[1] !== 0) return whole + (fractionParts[0] / fractionParts[1]);
+                            }
+                            return NaN;
+                        };
+                        const userValue = parseMixedNumber(userInput);
+                        const correctFractionValue = eval(correctAnswer.split('/')[0]) / eval(correctAnswer.split('/')[1]); // Simple eval for fraction value
+                        isCorrect = Math.abs(userValue - correctFractionValue) < 0.0001; // With tolerance
+                    }
+
+                } else {
+                    // For general string answers like "Right", "North", "2 min 35 s"
+                    isCorrect = userInput.toLowerCase().replace(/\s/g, '') === correctAnswer.toLowerCase().replace(/\s/g, '');
+                }
+            } else { // Handle numeric inputs
+                const userNum = parseFloat(userInput);
+                isCorrect = !isNaN(userNum) && Math.abs(userNum - correctAnswer) < 0.001; // Tolerance for decimals
+            }
+
+            // Apply modal feedback styling based on current theme
+            const currentTheme = body.getAttribute('data-theme');
+            modalContent.className = 'modal-content-themed'; // Reset classes
+            if (isCorrect) {
+                feedbackText.innerHTML = getSuccessMessage(currentTheme);
+                feedbackText.classList.add('text-green-400');
+                feedbackText.classList.remove('text-red-400');
+                feedbackExplanation.style.display = 'none';
+                modalContent.classList.add('success');
+            } else {
+                feedbackText.innerHTML = getErrorMessage(currentTheme);
+                feedbackText.classList.add('text-red-400');
+                feedbackText.classList.remove('text-green-400');
+                feedbackExplanation.style.display = 'block';
+                feedbackExplanation.innerHTML = `<p class='font-bold mb-2'>Correct Answer: ${correctAnswer}</p><p>${explanation}</p>`;
+                modalContent.classList.add('error');
+            }
+            modal.classList.remove('hidden');
+
+            // Clear map highlights if applicable (only for Position & Movement)
+            if (questionId.startsWith('position-q')) {
+                 clearMapHighlights('position-fortnite-map');
+            }
+        }
+
+        // Helper to get themed messages
+        function getSuccessMessage(theme) {
+            switch (theme) {
+                case 'minecraft': return "⛏️ Awesome Crafting! That's correct! 💎";
+                case 'roblox': return "✨ You got it! Perfect Angle! ✨";
+                case 'fortnite': return "🎯 Victory Royale! That's correct! 🎯";
+                case 'roblox-pizza': return "🍕 Chef's Kiss! That's correct! 🥳";
+                case 'minecraft-shapes': return "⛏️ Master Builder! That's correct! 💎";
+                default: return "That's correct! 🎉";
+            }
+        }
+
+        function getErrorMessage(theme) {
+            switch (theme) {
+                case 'minecraft': return "Almost! Let's check the recipe... �";
+                case 'roblox': return "📐 Not quite! Let's re-align... 📜";
+                case 'fortnite': return "⚠️ Storm is Closing In! Let's re-strategize... 📜";
+                case 'roblox-pizza': return "🤔 Oops! Let's check the recipe... 📜";
+                case 'minecraft-shapes': return "🚧 Block Placed Wrong! Let's review the plans... 📜";
+                default: return "Not quite! Let's review... 📜";
+            }
+        }
+
+        function toggleHint(hintId) {
+            const hintElement = document.getElementById(hintId);
+            if (hintElement) { // Check if hint element exists
+                hintElement.classList.toggle('hidden');
+            }
+        }
+
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+
+        // Close modal if user clicks outside the content
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                closeModal();
+            }
+        }
+
+        // Initial load: show the first topic by default
+        document.addEventListener('DOMContentLoaded', () => {
+            loadTopic('multiplication'); // Load Multiplication & Division by default
+        });
+    </script>
+</body>
+</html>
+�
