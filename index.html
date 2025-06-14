@@ -179,9 +179,9 @@
             --modal-success-bg: #A0B9D8;
             --modal-success-border: #586B80;
             --modal-success-text-color: #333333; /* Adjusted for contrast */
-            --modal-error-bg: #D8E6F0;
-            --modal-error-border: #8FA2B8;
-            --modal-error-text-color: #333333;
+            --modal-error-bg: #4C729B; /* Changed to darker for contrast */
+            --modal-error-border: #2A405A; /* Changed for darker bg */
+            --modal-error-text-color: #FFFFFF; /* Changed for contrast */
             --hint-bg: #FFFACD;
             --hint-border: #F0E68C;
             --hint-text-color: #333;
@@ -621,9 +621,9 @@
                         <div class="question-block p-4 rounded-lg">
                             <p class="text-lg mb-2 question-text">3. The Fortnite Battle Pass tracks how many wins each team gets in a week. Imagine a bar graph where:</p>
                             <ul class="list-disc list-inside mb-4">
-                                <li>Team Alpha has a bar reaching 15 wins.</li>
-                                <li>Team Bravo has a bar reaching 10 wins.</li>
-                                <li>Team Charlie has a bar reaching 20 wins.</li>
+                                <li>Team Alpha: 15 wins.</li>
+                                <li>Team Bravo: 10 wins.</li>
+                                <li>Team Charlie: 20 wins.</li>
                             </ul>
                             <p class="text-lg mb-2 question-text">Which team had the fewest wins?</p>
                             <input type="text" id="data-q3-input" class="input-themed w-full rounded mb-2">
@@ -671,7 +671,7 @@
                             <input type="number" id="data-q6-input" class="input-themed w-full rounded mb-2">
                             <button onclick="toggleHint('data-hint6')" class="action-button px-4 py-2 rounded w-full mb-2">Need a Hint?</button>
                             <div id="data-hint6" class="hidden hint-box p-3 rounded mb-2">First, figure out the total number of players for Tycoon and Obby using the key. Then, find the difference!</div>
-                            <button onclick="checkAnswer('data-q6', 4, 'Tycoon: 5 🎮 &times; 2 players/🎮 = 10 players. <br>Obby: 3 � &times; 2 players/🎮 = 6 players. <br>To find how many more, subtract: 10 - 6 = 4 more players.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
+                            <button onclick="checkAnswer('data-q6', 4, 'Tycoon: 5 🎮 &times; 2 players/🎮 = 10 players. <br>Obby: 3 🎮 &times; 2 players/🎮 = 6 players. <br>To find how many more, subtract: 10 - 6 = 4 more players.')" class="action-button px-4 py-2 rounded w-full">Investigate!</button>
                         </div>
 
                         <!-- Question 7 (Multi-step - from Bar Graph) -->
@@ -800,7 +800,7 @@
                             <div class="study-guide-inner-panel p-4 mt-2 rounded">
                                 <p><strong>Right Angle:</strong> Looks like a perfect corner, like the corner of a square or a Roblox block! It measures exactly 90 degrees. (Think of the 'L' shape your arm makes when bent at 90 degrees.)</p>
                                 <p><strong>Acute Angle:</strong> An "a-cute little angle"! It's smaller than a right angle (less than 90 degrees).</p>
-                                <p><strong>Obtuse Angle:</strong> "Obtuse is large and loose!" It's bigger than a right angle but less than a straight line (between 90 and 180 degrees).</p>
+                                <p><strong>Obtuse Angle:</b> "Obtuse is large and loose!" It's bigger than a right angle but less than a straight line (between 90 and 180 degrees).</p>
                                 <p><strong>Straight Angle:</strong> A straight line! It measures exactly 180 degrees.</p>
                             </div>
                         </article>
@@ -2035,7 +2035,7 @@
                     }
 
                 } else {
-                    // For general string answers like "Right", "North", "2 min 35 s"
+                    // For general string answers like "Right", "Acute", "2 min 35 s"
                     isCorrect = userInput.toLowerCase().replace(/\s/g, '') === correctAnswer.toLowerCase().replace(/\s/g, '');
                 }
             } else { // Handle numeric inputs
